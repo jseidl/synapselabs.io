@@ -1,0 +1,26 @@
+section a.text-primary:hover,
+footer a.text-dark:hover,
+footer a:hover {
+    color: rgb(218, 192, 1) !important;
+}
+
+footer a {
+    color: #000;
+}
+
+section a {
+    color: #000;
+    border-bottom: solid 1px #000;
+}
+
+div.card-body a.h5 {
+    border-bottom: none;
+}
+
+a { 
+    color: #000;
+}
+
+h4.widget-title {
+    border-top: 0;
+}
