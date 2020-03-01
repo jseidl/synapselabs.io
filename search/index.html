@@ -1,82 +1,76 @@
 <!DOCTYPE html>
 <html lang="en-us"><head>
   <meta charset="utf-8">
-  <title>synapse labs 🧠</title>
+  <title>Search Result</title>
 
   <!-- mobile responsive meta -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="this is meta description">
+  <meta name="description"
+    content="this is meta description">
   
   <meta name="author" content="Jan Seidl">
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.65.3" />
 
   <!-- plugins -->
   
   <link rel="stylesheet" href="https://synapselabs.io/plugins/bootstrap/bootstrap.min.css ">
   
-  <link rel="stylesheet" href="https://synapselabs.io/plugins/slick/slick.css ">
-  
   <link rel="stylesheet" href="https://synapselabs.io/plugins/themify-icons/themify-icons.css ">
-  
-  <link rel="stylesheet" href="https://synapselabs.io/plugins/venobox/venobox.css ">
   
 
   <!-- Main Stylesheet -->
   
-  <link rel="stylesheet" href="https://synapselabs.io/scss/style.min.css" integrity="" media="screen">
-  <link rel="stylesheet" href="https://synapselabs.io/css/custom.css" media="screen">
+  <link rel="stylesheet" href="https://synapselabs.io/scss/style.min.css" media="screen">
+
   <!--Favicon-->
   <link rel="shortcut icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
   <link rel="icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
 
+  
+  
+  
+
 </head><body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
 <!-- preloader start -->
 <div class="preloader">
   
 </div>
 <!-- preloader end -->
 <!-- navigation -->
-<header class="navigation">
+<header class="fixed-top navigation">
   <div class="container">
     
-    <nav class="navbar navbar-expand-lg navbar-white bg-transparent border-bottom">
-      
-      <a class="navbar-brand mobile-view" href="https://synapselabs.io/">synapse 🧠 shady garage robotics</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://synapselabs.io/"><img class="img-fluid" src="/images/logo.png" alt="synapse labs 🧠"></a>
       <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
         <i class="ti-menu h3"></i>
       </button>
 
-        <a class="navbar-brand desktop-view" href="https://synapselabs.io/"><strong>synapse labs 🧠</strong> <small>shady garage robotics</small></a>
-
+      <div class="collapse navbar-collapse text-center" id="navigation">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link" href="https://synapselabs.io/"> Home </a>
           </li>
           
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/about">About</a>
+            </li>
+            
           
-          <li class="nav-item">
-            <a class="nav-link" href="https://synapselabs.io/about">About</a>
-          </li>
-          
-          
-          
-          <li class="nav-item">
-            <a class="nav-link" href="https://synapselabs.io/posts">Posts</a>
-          </li>
-          
-          
-          
-          <li class="nav-item">
-            <a class="nav-link" href="https://synapselabs.io/contact">Contact</a>
-          </li>
-          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/contact">Contact</a>
+            </li>
+            
           
         </ul>
-
         
         <!-- search -->
-        <div class="search px-4">
+        <div class="search">
           <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
           <div class="search-wrapper">
             <form action="https://synapselabs.io//search" class="h-100">
@@ -86,85 +80,82 @@
           </div>
         </div>
         
-
-        
       </div>
     </nav>
   </div>
 </header>
-<!-- /navigation -->
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
 
 <section class="section">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <div id="search-results"></div>
-        <script id="search-result-template" type="text/x-js-template">
-          <div class="py-4 border-bottom" id="summary-${key}">
-            <h4><a href="${link}">${title}</a></h4>
-            <p>${snippet}</p>
-            ${ isset tags }<p>Tags: ${tags}</p>${ end }
-            ${ isset categories }<p>Categories: ${categories}</p>${ end }
-          </div>
+      <div class="col-lg-8">
+        <h2>Search result for
+          <span class="text-primary">
+            <script>
+              var str = (window.location.search).substr(3);
+              var result = decodeURI(str.replace(/+/g, " "));
+              document.write(result);
+            </script>
+          </span>
+        </h2>
+        <div class="block shadow">
+          <div id="search-results"></div>
+          <script id="search-result-template" type="text/x-js-template">
+            <div class="py-4 border-bottom" id="summary-${key}">
+              <h4><a href="${link}">${title}</a></h4>
+              <p>${snippet}</p>
+              ${ isset tags }<p>Tags: ${tags}</p>${ end }
+              ${ isset categories }<p>Categories: ${categories}</p>${ end }
+            </div>
         </script>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 
-
-<footer>
+<footer class="py-4 bg-light border-top">
   <div class="container">
-    <div class="row">
-    
-      <div class="col-lg-3 col-sm-6 mb-5">
-        <h6 class="mb-4">Synapse Labs</h6>
-        
-        Doing shit with love, driving wife crazy.
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://synapselabs.io/" class="d-block pb-3"><img src="/images/logo.png" class="img-fluid" alt="synapse labs 🧠"></a>
       </div>
-      <div class="col-lg-3 col-sm-6 mb-5">
-        <h6 class="mb-4">Social</h6>
-        <ul class="list-unstyled">
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
           
-          <li class="mb-3"><a class="text-dark" href="https://twitter.com/jseidl">twitter</a></li>
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/about">About</a></li>
           
-          <li class="mb-3"><a class="text-dark" href="https://github.com/jseidl">github</a></li>
-          
-          <li class="mb-3"><a class="text-dark" href="https://linkedin.com/in/janseidl">linkedin</a></li>
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/contact">Contact</a></li>
           
         </ul>
       </div>
-      <div class="col-lg-3 col-sm-6 mb-5">
-        <h6 class="mb-4">Categories</h6>
-        <ul class="list-unstyled">
-          <li class="mb-3"><a class="text-dark"
-              href="/categories/home-automation">Home automation</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-3 col-sm-6 mb-5">
-        <h6 class="mb-4">Quick Links</h6>
-        <ul class="list-unstyled">
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
           
-          <li class="mb-3"><a class="text-dark" href="https://synapselabs.io/about">About</a></li>
+          <li class="list-inline-item"><a href="https://twitter.com/jseidl"><i class="ti-twitter-alt"></i></a></li>
           
-          <li class="mb-3"><a class="text-dark" href="https://synapselabs.io/posts">Posts</a></li>
+          <li class="list-inline-item"><a href="https://github.com/jseidl"><i class="ti-github"></i></a></li>
           
-          <li class="mb-3"><a class="text-dark" href="https://synapselabs.io/contact">Contact</a></li>
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/janseidl"><i class="ti-linkedin"></i></a></li>
           
         </ul>
       </div>
-      <div class="col-12 border-top py-4 text-center">
-      <strong>synapse labs 🧠</strong> <small>shady garage robotics</small>
-      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>© 2020 <a href="https://synapselabs.io">synapse labs</a> All Rights Reserved</span>
     </div>
   </div>
 </footer>
 
+
+
+
 <script>
   var indexURL = "https://synapselabs.io/index.json"
 </script>
+
 
 <!-- JS Plugins -->
 
@@ -172,35 +163,18 @@
 
 <script src="https://synapselabs.io/plugins/bootstrap/bootstrap.min.js"></script>
 
-<script src="https://synapselabs.io/plugins/slick/slick.min.js"></script>
-
-<script src="https://synapselabs.io/plugins/venobox/venobox.min.js"></script>
-
 <script src="https://synapselabs.io/plugins/search/fuse.min.js"></script>
 
 <script src="https://synapselabs.io/plugins/search/mark.js"></script>
 
 <script src="https://synapselabs.io/plugins/search/search.js"></script>
 
-<script src="https://synapselabs.io/plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
 
 <script src="https://synapselabs.io/js/script.min.js"></script>
+
 <!-- google analitycs -->
-<script>
-  (function (i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r;
-    i[r] = i[r] || function () {
-      (i[r].q = i[r].q || []).push(arguments)
-    }, i[r].l = 1 * new Date();
-    a = s.createElement(o),
-      m = s.getElementsByTagName(o)[0];
-    a.async = 1;
-    a.src = g;
-    m.parentNode.insertBefore(a, m)
-  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-  ga('create', 'Your ID', 'auto');
-  ga('send', 'pageview');
-</script></body>
+</body>
+
 </html>

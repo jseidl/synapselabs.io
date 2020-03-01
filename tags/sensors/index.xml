@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Mastering presence: The quest for reliable presence awareness</title>
+      <title>Mastering presence: the quest for reliable presence awareness in Home Assistant</title>
       <link>https://synapselabs.io/posts/mastering-presence-the-quest-for-reliable-presence-awareness/</link>
       <pubDate>Wed, 26 Feb 2020 22:57:15 -0800</pubDate>
       
       <guid>https://synapselabs.io/posts/mastering-presence-the-quest-for-reliable-presence-awareness/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet justo a nunc eleifend posuere.</description>
+      <description>&lt;p&gt;One of the main points of a truly smart home is how much it is aware of itself and the things within and around. For I to consider a home to be smart, or even automated, it must do stuff by itself, not because you are giving it commands. If all it does is react to commands, then it&amp;rsquo;s an RC (remote-controlled) home (yes, like toy cars), and that&amp;rsquo;s cool too (but not as cool). I go for an almost sentient state vibe, more like a J.A.R.V.I.S (although Skynet is a risk).&lt;/p&gt;</description>
     </item>
     
   </channel>

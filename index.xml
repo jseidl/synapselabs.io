@@ -6,19 +6,10 @@
     <description>Recent content on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 26 Feb 2020 22:57:15 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 29 Oct 2019 13:49:23 +0600</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Mastering presence: The quest for reliable presence awareness</title>
-      <link>https://synapselabs.io/posts/mastering-presence-the-quest-for-reliable-presence-awareness/</link>
-      <pubDate>Wed, 26 Feb 2020 22:57:15 -0800</pubDate>
-      
-      <guid>https://synapselabs.io/posts/mastering-presence-the-quest-for-reliable-presence-awareness/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet justo a nunc eleifend posuere.</description>
-    </item>
     
     <item>
       <title>About Me</title>
@@ -26,7 +17,8 @@
       <pubDate>Tue, 29 Oct 2019 13:49:23 +0600</pubDate>
       
       <guid>https://synapselabs.io/about/</guid>
-      <description>I&amp;rsquo;m a Brazilian information security warlock living in the US obssesed by robots.</description>
+      <description>I&amp;rsquo;m a Brazilian information security warlock living in the US obssesed by robots. I always loved electronics and automating everything. I&amp;rsquo;ve wrote IRC bots, chatbots, scraper bots, videogame bots you name it. I got my second job by coding a bot to do my first one. Did I said already I fucking love robots and automation? Hell yea! 🤟
+I work at Brave Software making sure our infrastructure stay secure and automating processes so our buddies can focus on the important things. Before that I used to work protecting critical infrastructure from really bad people. So, if you still have your utilities going, you&amp;rsquo;re welcome 😉.</description>
     </item>
     
   </channel>
