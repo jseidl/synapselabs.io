@@ -6,9 +6,100 @@
     <description>Recent content in Tags on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Sat, 04 Apr 2020 09:00:15 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>3D printing</title>
+      <link>https://synapselabs.io/tags/3d-printing/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/3d-printing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AM312</title>
+      <link>https://synapselabs.io/tags/am312/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/am312/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DHT22</title>
+      <link>https://synapselabs.io/tags/dht22/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/dht22/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ESP8266</title>
+      <link>https://synapselabs.io/tags/esp8266/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/esp8266/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ESPHome</title>
+      <link>https://synapselabs.io/tags/esphome/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/esphome/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Home Assistant</title>
+      <link>https://synapselabs.io/tags/home-assistant/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/home-assistant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Neopixel</title>
+      <link>https://synapselabs.io/tags/neopixel/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/neopixel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sensors</title>
+      <link>https://synapselabs.io/tags/sensors/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/sensors/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TEMT6000</title>
+      <link>https://synapselabs.io/tags/temt6000/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/temt6000/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Alexa</title>
+      <link>https://synapselabs.io/tags/alexa/</link>
+      <pubDate>Mon, 30 Mar 2020 13:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/alexa/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

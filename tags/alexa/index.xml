@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Alexa on synapse labs 🧠</title>
+    <link>https://synapselabs.io/tags/alexa/</link>
+    <description>Recent content in Alexa on synapse labs 🧠</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 30 Mar 2020 13:00:00 -0800</lastBuildDate>
+    
+	<atom:link href="https://synapselabs.io/tags/alexa/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using Alexa to greet you with Home Assistant</title>
+      <link>https://synapselabs.io/posts/using-alexa-to-greet-you-with-home-assistant/</link>
+      <pubDate>Mon, 30 Mar 2020 13:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/using-alexa-to-greet-you-with-home-assistant/</guid>
+      <description>&lt;p&gt;If there&amp;rsquo;s one thing that makes everyone feels better despite having no friends, is having robots talking to you like they cared. From today on, every time you arrive home to your empty house &lt;del&gt;because your partner divorced you and took your kids and your dog&lt;/del&gt;, you will feel that warmth in your heart.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Learn how to build custom multisensors with an ESP8266 and ESPHome on Home Assistant">
+  
+  <meta name="author" content="Jan Seidl">
+  <meta name="generator" content="Hugo 0.65.3" />
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+</head><body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://synapselabs.io/"><img class="img-fluid" src="/images/logo.png" alt="synapse labs 🧠"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://synapselabs.io/"> Home </a>
+          </li>
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/about">About</a>
+            </li>
+            
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/contact">Contact</a>
+            </li>
+            
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://synapselabs.io//search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        <h2>Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/jan-seidl">Jan Seidl</a>,
+          April 4, 2020, in 
+          <a href="/categories/home-automation">Home automation</a>
+          
+        </div>
+        
+        <img src="/images/featured-post/esp-multisensor.jpg" class="img-fluid w-100 mb-4" alt="Building custom multisensors with an ESP8266 and ESPHome on Home Assistant">
+        
+        <div class="content">
+          <p>One of the things I like about the ESP family of micro-controllers is the amount of <code>3V3</code> and <code>GND</code> pins on the board. That allows us to use only dupont cables and saves us from the hassle (or if you&rsquo;re terrible at soldering <del>like me</del>) of soldering stuff. This is an easy build, inspired by <a href="https://www.youtube.com/watch?v=jpjfVc-9IrQ&amp;t=640s">BRUH Automation&rsquo;s $15 Multisensor</a> but using <a href="https://esphome.io/">ESPHome</a> instead of custom code.</p>
+<p>I&rsquo;ve spent lots of time building my own library for ESP sensors but when I gave ESPHome a try, I&rsquo;ve immediately trashed all that code and migrated my all sensors into ESPHome. I never looked back and to date I&rsquo;m 100% satisfied with that choice. It allows you to modify and deploy from Home Assistant&rsquo;s ESPHome Add-On, handle <code>unavailable</code> states, have plenty of modules for different components and it&rsquo;s just a breeze to use.</p>
+<h3 id="what-youre-gonna-need">What you&rsquo;re gonna need</h3>
+<ul>
+<li><a href="https://amzn.to/38gf3fX">ESP8266 micro-controller</a></li>
+<li><a href="https://amzn.to/2wll79H">DHT22 temperature &amp; humidity sensor</a></li>
+<li><a href="https://amzn.to/2uHf2UK">AM312 PIR motion sensor</a></li>
+<li><a href="https://amzn.to/32BK4dl">TEMT600 Analog Light Intensity Module</a></li>
+<li><a href="https://amzn.to/2x25HHZ">5mm Neopixel LED</a></li>
+<li>Some <a href="https://amzn.to/38be2G4">short dupont-cables</a>.</li>
+<li><em>Optional: <a href="https://www.thingiverse.com/thing:2239142">This 3D printed enclosure</a> (requires 3D printer)</em></li>
+</ul>
+<p><em>Note: I will not cover wiring up with the dupont cables as you can check this out on <a href="https://www.youtube.com/watch?v=jpjfVc-9IrQ&amp;t=640s">BRUH Automation&rsquo;s video</a>.</em></p>
+<h3 id="temperature--humidity">Temperature &amp; Humidity</h3>
+<p>I left those at 60 seconds intervals, first because it&rsquo;s a pretty acceptable update range for temperature sensing and second because DHT22s aren&rsquo;t quite fond of being probed all the time. I also needed a <code>lambda</code> filter since the default output is in <em>Celsius</em> and I live in the United States and here we use <em>freedom units</em>, not the <del>peasant</del> <em>metric system</em>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: dht
+  <span style="color:#66d9ef">pin</span>: D6
+  <span style="color:#66d9ef">model</span>: AM2302
+  temperature:
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
+    <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
+    filters:
+      - <span style="color:#66d9ef">lambda</span>: return x * (<span style="color:#ae81ff">9.0</span>/<span style="color:#ae81ff">5.0</span>) + <span style="color:#ae81ff">32.0</span>; 
+</code></pre></div><h3 id="illuminance">Illuminance</h3>
+<p>I check those every 2 seconds and use a <code>sliding_window_moving_average</code> filter to iron out outliers. Without a filter you will se this sensor bounce around. I&rsquo;ve also used the <code>lambda</code> filter according to <a href="https://esphome.io/cookbook/temt6000.html">TEMT600&rsquo;s cookbook on ESPHome website</a> in order to convert the <code>ADC</code> input into illuminance <code>lux</code> values.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: adc
+  <span style="color:#66d9ef">pin</span>: A0
+  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
+  <span style="color:#66d9ef">id</span>: light_sensor
+  <span style="color:#66d9ef">unit_of_measurement</span>: lux
+  <span style="color:#66d9ef">update_interval</span>: 2s
+  filters:
+    - <span style="color:#66d9ef">lambda</span>: return (x * <span style="color:#ae81ff">3.3</span> / <span style="color:#ae81ff">10000.0</span>) * <span style="color:#ae81ff">2000000.0</span>;
+    - sliding_window_moving_average:
+        <span style="color:#66d9ef">window_size</span>: <span style="color:#ae81ff">5</span>
+        <span style="color:#66d9ef">send_every</span>: <span style="color:#ae81ff">5</span>
+</code></pre></div><h3 id="pir-motion-sensor">PIR Motion sensor</h3>
+<p>This is the most straightforward, just defined as a <code>binary_sensor</code>. Couldn&rsquo;t be more straightforward and so far I didn&rsquo;t felt the need for filtering.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: gpio
+  <span style="color:#66d9ef">pin</span>: D5
+  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
+  <span style="color:#66d9ef">device_class</span>: motion
+</code></pre></div><h3 id="template-sensor">Template sensor</h3>
+<p>I use a template sensor to flip a <code>binary_sensor</code> called <code>light</code> whenever <em>Illuminance</em> crosses a given threshold (<code>2</code> in my case). This is a useful feature if, for example, you want to only turn the lights on if the room is dark.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: template
+  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
+  <span style="color:#66d9ef">device_class</span>: light
+  <span style="color:#66d9ef">lambda</span>: |<span style="color:#e6db74">-
+</span><span style="color:#e6db74">    if (id(light_sensor).state &gt; 2) {</span>
+      return <span style="color:#66d9ef">true</span>;
+    } else {
+      return <span style="color:#66d9ef">false</span>;
+    }
+</code></pre></div><h3 id="neopixel-led">Neopixel LED</h3>
+<p>Having a Neopixel LED instead of a plain RGB led saves you some pins on the ESP8266 board and are exposed to Home Assistant as a <code>light</code> which you can control the color and brightness. I use with my automations in order to have a visual aid on the <em>room occupancy status</em> (<code>OFF</code> = <em>clear</em>, <code>blue</code> = <em>occupied</em>).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">light:
+  - <span style="color:#66d9ef">platform</span>: fastled_clockless
+    <span style="color:#66d9ef">chipset</span>: WS2812
+    <span style="color:#66d9ef">pin</span>: D3
+    <span style="color:#66d9ef">num_leds</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">rgb_order</span>: RGB
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
+
+</code></pre></div><p>Full code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">esphome:
+  <span style="color:#66d9ef">name</span>: multisensor
+  <span style="color:#66d9ef">platform</span>: ESP8266
+  <span style="color:#66d9ef">board</span>: nodemcuv2 <span style="color:#75715e"># adjust accordingly for your board</span>
+
+wifi:
+  <span style="color:#66d9ef">ssid</span>: <span style="color:#e6db74">&#34;Your Wifi SSID&#34;</span>
+  <span style="color:#66d9ef">password</span>: !secret wifi_password
+  
+<span style="color:#75715e"># Enable logging</span>
+logger:
+
+<span style="color:#75715e"># Enable Home Assistant API</span>
+api:
+  <span style="color:#66d9ef">password</span>: !secret api_password
+
+ota:
+  <span style="color:#66d9ef">password</span>: !secret ota_password
+
+<span style="color:#75715e"># Sensors</span>
+sensor:
+  - <span style="color:#66d9ef">platform</span>: dht
+    <span style="color:#66d9ef">pin</span>: D6
+    <span style="color:#66d9ef">model</span>: AM2302
+    temperature:
+      <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
+      <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
+      filters:
+        - <span style="color:#66d9ef">lambda</span>: return x * (<span style="color:#ae81ff">9.0</span>/<span style="color:#ae81ff">5.0</span>) + <span style="color:#ae81ff">32.0</span>; 
+    humidity:
+      <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Humidity (MultiSensor)&#34;</span>
+    <span style="color:#66d9ef">update_interval</span>: 60s
+  - <span style="color:#66d9ef">platform</span>: adc
+    <span style="color:#66d9ef">pin</span>: A0
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
+    <span style="color:#66d9ef">id</span>: light_sensor
+    <span style="color:#66d9ef">unit_of_measurement</span>: lux
+    <span style="color:#66d9ef">update_interval</span>: 2s
+    filters:
+      - <span style="color:#66d9ef">lambda</span>: return (x * <span style="color:#ae81ff">3.3</span> / <span style="color:#ae81ff">10000.0</span>) * <span style="color:#ae81ff">2000000.0</span>;
+      - sliding_window_moving_average:
+          <span style="color:#66d9ef">window_size</span>: <span style="color:#ae81ff">5</span>
+          <span style="color:#66d9ef">send_every</span>: <span style="color:#ae81ff">5</span>
+    
+binary_sensor:
+  - <span style="color:#66d9ef">platform</span>: gpio
+    <span style="color:#66d9ef">pin</span>: D5
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
+    <span style="color:#66d9ef">device_class</span>: motion
+  - <span style="color:#66d9ef">platform</span>: template
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
+    <span style="color:#66d9ef">device_class</span>: light
+    <span style="color:#66d9ef">lambda</span>: |<span style="color:#e6db74">-
+</span><span style="color:#e6db74">      if (id(light_sensor).state &gt; 2) {</span>
+        return <span style="color:#66d9ef">true</span>;
+      } else {
+        return <span style="color:#66d9ef">false</span>;
+      }
+
+light:
+  - <span style="color:#66d9ef">platform</span>: fastled_clockless
+    <span style="color:#66d9ef">chipset</span>: WS2812
+    <span style="color:#66d9ef">pin</span>: D3
+    <span style="color:#66d9ef">num_leds</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">rgb_order</span>: RGB
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
+</code></pre></div>
+        </div>
+      </div>
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        
+        
+        
+        <h3>You might also be interested in:</h3>
+        <ul>
+          
+          <li><a href="/posts/using-alexa-to-greet-you-with-home-assistant/">Using Alexa to greet you with Home Assistant</a></li>
+          
+        </ul>
+        
+      </div>
+      
+      <div class="col-lg-12 mx-auto block shadow">
+        
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "synapse-labs" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://synapselabs.io/" class="d-block pb-3"><img src="/images/logo.png" class="img-fluid" alt="synapse labs 🧠"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/about">About</a></li>
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://twitter.com/jseidl"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/jseidl"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/janseidl"><i class="ti-linkedin"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>© 2020 <a href="https://synapselabs.io">synapse labs</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://synapselabs.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://synapselabs.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/mark.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://synapselabs.io/js/script.min.js"></script>
+
+<!-- google analitycs -->
+</body>
+
+</html>

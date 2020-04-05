@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TEMT6000 on synapse labs 🧠</title>
+    <link>https://synapselabs.io/tags/temt6000/</link>
+    <description>Recent content in TEMT6000 on synapse labs 🧠</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Apr 2020 09:00:15 -0800</lastBuildDate>
+    
+	<atom:link href="https://synapselabs.io/tags/temt6000/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</title>
+      <link>https://synapselabs.io/posts/multisensors-with-esphome-on-homeassistant/</link>
+      <pubDate>Sat, 04 Apr 2020 09:00:15 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/multisensors-with-esphome-on-homeassistant/</guid>
+      <description>&lt;p&gt;One of the things I like about the ESP family of micro-controllers is the amount of &lt;code&gt;3V3&lt;/code&gt; and &lt;code&gt;GND&lt;/code&gt; pins on the board. That allows us to use only dupont cables and saves us from the hassle (or if you&amp;rsquo;re terrible at soldering &lt;del&gt;like me&lt;/del&gt;) of soldering stuff. This is an easy build, inspired by &lt;a href=&#34;https://www.youtube.com/watch?v=jpjfVc-9IrQ&amp;amp;t=640s&#34;&gt;BRUH Automation&amp;rsquo;s $15 Multisensor&lt;/a&gt; but using &lt;a href=&#34;https://esphome.io/&#34;&gt;ESPHome&lt;/a&gt; instead of custom code.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
