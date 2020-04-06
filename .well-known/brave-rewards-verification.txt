@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: synapselabs.io
+Token: ce9cd2fa678a738e7587dd848ba503ad522524def7a8d65c484fe330aad3dc96
