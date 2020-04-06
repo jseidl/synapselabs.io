@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us"><head>
   <meta charset="utf-8">
-  <title>About Me</title>
+  <title>Contact Us</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -26,7 +26,7 @@
   <link rel="shortcut icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
   <link rel="icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
 
-  <link rel="alternate" type="application/rss+xml" href="https://synapselabs.io/about/index.xml" title="synapse labs 🧠" />
+  <link rel="alternate" type="application/rss+xml" href="https://synapselabs.io/contact/index.xml" title="synapse labs 🧠" />
   
   
   
@@ -89,15 +89,32 @@
 
 <section class="section">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-8 mx-auto text-center block shadow">
-        <img src="/images/author.jpg" alt="" class="img-fluid d-block mx-auto rounded-circle mb-4 author-thumb">
-        <h4>About Me</h4>
-        <div class="content">
-          <p>I&rsquo;m a Brazilian information security warlock living in the US obssesed by robots. I always loved electronics and automating everything. I&rsquo;ve wrote IRC bots, chatbots, scraper bots, videogame bots you name it. I got my second job by coding a bot to do my first one. Did I said already I fucking love robots and automation? Hell yea! 🤟</p>
-<p>I work at <a href="https://brave.com">Brave Software</a> making sure our infrastructure stay secure and automating processes so our buddies can focus on the important things. Before that I used to work protecting critical infrastructure from really bad people. So, if you still have your utilities going, you&rsquo;re welcome 😉.</p>
-
-        </div>
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <h2 class="mb-4">Contact Us</h2>
+        <div class="content"><p>Have a question? Suggestion? Is there a project you&rsquo;d like me to do and make a post here at the labs? Bring it on and we&rsquo;ll add to our pile of crazy stuff to do!</p>
+</div>
+        <form method="POST" action="https://formspree.io/xgelazld" class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control mb-4" placeholder="Name" name="name" id="name">
+          </div>
+          <div class="col-md-6">
+            <input type="email" class="form-control mb-4" placeholder="Email" name="email" id="email">
+          </div>
+          <div class="col-12">
+            <input type="text" class="form-control mb-4" placeholder="Subject" name="subject" id="subject">
+          </div>
+          <div class="col-12">
+            <textarea name="message" id="message" class="form-control mb-4" placeholder="Type You Message Here"
+              rows="5"></textarea>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary btn-block" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-lg-6 text-md-right">
+        <img class="img-fluid" src="/images/contact.svg" alt="">
       </div>
     </div>
   </div>
