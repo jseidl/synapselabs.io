@@ -125,7 +125,7 @@
     filters:
       - <span style="color:#66d9ef">lambda</span>: return x * (<span style="color:#ae81ff">9.0</span>/<span style="color:#ae81ff">5.0</span>) + <span style="color:#ae81ff">32.0</span>; 
 </code></pre></div><h3 id="illuminance">Illuminance</h3>
-<p>I check those every 2 seconds and use a <code>sliding_window_moving_average</code> filter to iron out outliers. Without a filter you will se this sensor bounce around. I&rsquo;ve also used the <code>lambda</code> filter according to <a href="https://esphome.io/cookbook/temt6000.html">TEMT600&rsquo;s cookbook on ESPHome website</a> in order to convert the <code>ADC</code> input into illuminance <code>lux</code> values.</p>
+<p>I check those every 2 seconds and use a <code>sliding_window_moving_average</code> filter to iron out outliers. Without a filter you will see this sensor bounce around. I&rsquo;ve also used the <code>lambda</code> filter according to <a href="https://esphome.io/cookbook/temt6000.html">TEMT600&rsquo;s cookbook on ESPHome website</a> in order to convert the <code>ADC</code> input into illuminance <code>lux</code> values.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: adc
   <span style="color:#66d9ef">pin</span>: A0
   <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
