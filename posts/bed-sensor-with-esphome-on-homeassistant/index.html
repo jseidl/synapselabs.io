@@ -212,7 +212,45 @@ binary_sensor:
       } else {
         return <span style="color:#66d9ef">false</span>;
       }
-</code></pre></div>
+</code></pre></div><h3 id="creating-groups-for-the-bed-occupancy">Creating groups for the bed occupancy</h3>
+<p>Groups are useful for a bunch of stuff. We&rsquo;ll use in our sensor to create two more <em>pseudo sensors</em> to indicate wether the bed is occupied and/or full.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">group:
+  bed_occupied:
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Bed Occupied&#34;</span>
+    entities:
+      - binary_sensor.bed_occupancy_left
+      - binary_sensor.bed_occupancy_right
+  bed_full:
+    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Bed Full&#34;</span>
+    entities:
+      - binary_sensor.bed_occupancy_left
+      - binary_sensor.bed_occupancy_right
+    <span style="color:#66d9ef">all</span>: <span style="color:#66d9ef">true</span>
+</code></pre></div><p>I usually also pair them with a <code>Template binary_sensor</code> to make them prettier:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">binary_sensor:
+  - <span style="color:#66d9ef">platform</span>: template
+    sensors:
+      <span style="color:#75715e"># Bed Sensors</span>
+      bed_occupied:
+        <span style="color:#66d9ef">friendly_name</span>: Bed Occupied (Master Bedroom)
+        <span style="color:#66d9ef">device_class</span>: occupancy
+        <span style="color:#66d9ef">value_template</span>: &gt;<span style="color:#e6db74">-
+</span><span style="color:#e6db74">          {{ is_state(&#39;group.bed_occupied&#39;, &#39;on&#39;) }}</span>
+      bed_full:
+        <span style="color:#66d9ef">friendly_name</span>: Bed Full (Master Bedroom)
+        <span style="color:#66d9ef">device_class</span>: occupancy
+        <span style="color:#66d9ef">value_template</span>: &gt;<span style="color:#e6db74">-
+</span><span style="color:#e6db74">          {{ is_state(&#39;group.bed_full&#39;, &#39;on&#39;) }}</span>
+</code></pre></div><h3 id="automate-your-bed">Automate your bed</h3>
+<p>Now that you can <em>sense</em> occupancy on you bed, you can go crazy with the automations. See below a curated list of my bed automations.</p>
+<ul>
+<li>Turn off all lights when <code>bed_full</code></li>
+<li>Turn on the alarm at night when <code>bed_full</code></li>
+<li>Turn off the alarm in the morning when not <code>bed_full</code></li>
+<li>Turn on the lightstrips under the bed when (movement in front of the nightstand) when not <code>bed_occupied</code> (night lights)</li>
+<li>Disable Alexa voice notifications (<code>input_boolean.voice_notifications</code>) when <code>bed_occupied</code></li>
+</ul>
+<p>That&rsquo;s all for today folks! If you have any questions or comments, please leave below!</p>
         </div>
       </div>
       <div class="col-lg-12 mx-auto block shadow mb-5">
