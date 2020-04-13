@@ -3,6 +3,61 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://synapselabs.io/categories/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/esp8266/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/esphome/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/hc-sr04/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/home-assistant/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/categories/home-automation/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/posts/bed-sensor-with-esphome-on-homeassistant/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/posts/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/sensors/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/</loc>
+    <lastmod>2020-04-06T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://synapselabs.io/tags/3d-printing/</loc>
     <lastmod>2020-04-04T09:00:15-08:00</lastmod>
   </url>
@@ -18,57 +73,12 @@
   </url>
   
   <url>
-    <loc>https://synapselabs.io/categories/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://synapselabs.io/tags/dht22/</loc>
     <lastmod>2020-04-04T09:00:15-08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://synapselabs.io/tags/esp8266/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/tags/esphome/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/tags/home-assistant/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/categories/home-automation/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://synapselabs.io/tags/neopixel/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/posts/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/tags/sensors/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/</loc>
-    <lastmod>2020-04-04T09:00:15-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/tags/</loc>
     <lastmod>2020-04-04T09:00:15-08:00</lastmod>
   </url>
   

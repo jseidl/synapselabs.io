@@ -6,10 +6,19 @@
     <description>Recent content in Home Automation on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Apr 2020 09:00:15 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 06 Apr 2020 09:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/categories/home-automation/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Making a bed occupancy sensor with bathroom scales, ESP32, HX711 load-cell sensors and ESPHome on Home Assistant</title>
+      <link>https://synapselabs.io/posts/bed-sensor-with-esphome-on-homeassistant/</link>
+      <pubDate>Mon, 06 Apr 2020 09:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/bed-sensor-with-esphome-on-homeassistant/</guid>
+      <description>&lt;p&gt;After slapping around multiple &lt;a href=&#34;https://synapselabs.io/posts/multisensors-with-esphome-on-homeassistant/&#34;&gt;ESPHome-based multisensors&lt;/a&gt; around the house, I needed a way to keep them from going off while I&amp;rsquo;m sleeping and I wasn&amp;rsquo;t quite fond of manually disabling and re-enabling the automations in a daily basis. In order to get Home Assistant to know when myself or my wife are in bed, I&amp;rsquo;ve decided to create custom bed occupancy sensors using a pair of bathroom scales, a pair of HX711 load-cell sensors on top of the same framework (ESPHome).&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</title>
