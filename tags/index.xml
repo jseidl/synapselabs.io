@@ -6,10 +6,28 @@
     <description>Recent content in Tags on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Apr 2020 09:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 13 Apr 2020 11:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Home Assistant</title>
+      <link>https://synapselabs.io/tags/home-assistant/</link>
+      <pubDate>Mon, 13 Apr 2020 11:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/home-assistant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sensors</title>
+      <link>https://synapselabs.io/tags/sensors/</link>
+      <pubDate>Mon, 13 Apr 2020 11:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/sensors/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>ESP8266</title>
@@ -35,24 +53,6 @@
       <pubDate>Mon, 06 Apr 2020 09:00:00 -0800</pubDate>
       
       <guid>https://synapselabs.io/tags/hc-sr04/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Home Assistant</title>
-      <link>https://synapselabs.io/tags/home-assistant/</link>
-      <pubDate>Mon, 06 Apr 2020 09:00:00 -0800</pubDate>
-      
-      <guid>https://synapselabs.io/tags/home-assistant/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Sensors</title>
-      <link>https://synapselabs.io/tags/sensors/</link>
-      <pubDate>Mon, 06 Apr 2020 09:00:00 -0800</pubDate>
-      
-      <guid>https://synapselabs.io/tags/sensors/</guid>
       <description></description>
     </item>
     

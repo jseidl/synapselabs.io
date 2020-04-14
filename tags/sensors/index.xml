@@ -6,10 +6,20 @@
     <description>Recent content in Sensors on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Apr 2020 09:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 13 Apr 2020 11:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/sensors/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Battery level tricks with Home assistant</title>
+      <link>https://synapselabs.io/posts/battery-level-tricks-with-home-assistant/</link>
+      <pubDate>Mon, 13 Apr 2020 11:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/battery-level-tricks-with-home-assistant/</guid>
+      <description>There are several components in Home Assistant that report their battery level. Today we&amp;rsquo;re gonna learn how to do some cool tricks in order to get most of this information such as :
+ Notifying Low battery sensors Grouping multiple battery sensors for the same device Getting your phone&amp;rsquo;s charging state by monitoring the battery level Reminder for charging your phone Tweaking the battery icon with charging states  Low battery sensors I have a bunch of wireless Zigbee and Z-Wave sensors integrated with Home Assistant. Even thou they&amp;rsquo;re very efficient by using deep sleep, I still have to change their battery from time to time and I&amp;rsquo;d rather be notified that I need to do so than one day realize something is not working because that sensor&amp;rsquo;s battery is dead.</description>
+    </item>
     
     <item>
       <title>Making a bed occupancy sensor with bathroom scales, ESP32, HX711 load-cell sensors and ESPHome on Home Assistant</title>
