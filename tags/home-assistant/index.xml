@@ -6,10 +6,19 @@
     <description>Recent content in Home Assistant on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Apr 2020 11:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2020 11:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/home-assistant/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Create a custom &#39;Residents&#39; card in your Home Assistant&#39;s dashboard</title>
+      <link>https://synapselabs.io/posts/lovelace-residents-card-for-home-assistant/</link>
+      <pubDate>Sat, 16 May 2020 11:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/lovelace-residents-card-for-home-assistant/</guid>
+      <description>&lt;p&gt;Shortly after I released &lt;a href=&#34;https://synapselabs.io/posts/battery-level-tricks-with-home-assistant/&#34;&gt;my latest post&lt;/a&gt;, a friend DM&amp;rsquo;ed me on Twitter and asked about my residents card that I showcased briefly, so it gave the perfect opportunity on making a post about it and share with the world this card that I enjoy so much. It&amp;rsquo;s pretty easy and it&amp;rsquo;s mostly vanilla Home Assistant/Lovelace so put your mad scientist lab coats, hop aboard and let&amp;rsquo;s learn how to make awesome display cards.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Battery level tricks with Home assistant</title>

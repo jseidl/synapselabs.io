@@ -6,7 +6,7 @@
     <description>Recent content in Tags on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Apr 2020 11:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2020 11:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,18 @@
     <item>
       <title>Home Assistant</title>
       <link>https://synapselabs.io/tags/home-assistant/</link>
-      <pubDate>Mon, 13 Apr 2020 11:00:00 -0800</pubDate>
+      <pubDate>Sat, 16 May 2020 11:00:00 -0800</pubDate>
       
       <guid>https://synapselabs.io/tags/home-assistant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lovelace</title>
+      <link>https://synapselabs.io/tags/lovelace/</link>
+      <pubDate>Sat, 16 May 2020 11:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/tags/lovelace/</guid>
       <description></description>
     </item>
     
