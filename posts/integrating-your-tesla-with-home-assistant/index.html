@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Integrating your Tesla with Home Assistant</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Make your car part of your home. Integrate your Telsa (Model S, Model 3, Model X or Model Y) with Home Assistant">
+  
+  <meta name="author" content="Jan Seidl">
+  <meta name="generator" content="Hugo 0.65.3" />
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+
+  </head><body>
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://synapselabs.io/"><img class="img-fluid" src="/images/logo.png" alt="synapse labs 🧠"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://synapselabs.io/"> Home </a>
+          </li>
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/about">About</a>
+            </li>
+            
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/contact">Contact</a>
+            </li>
+            
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://synapselabs.io//search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        <h2>Integrating your Tesla with Home Assistant</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/jan-seidl">Jan Seidl</a>,
+          June 29, 2020, in 
+          <a href="/categories/home-automation">Home automation</a>
+          
+        </div>
+        
+        <div class="content">
+          <p>Having a sweet electric car is sweet indeed. But integrating it with your home automation system, that&rsquo;s even sweeter! Fortunately Home Assistant has a <a href="https://www.home-assistant.io/integrations/tesla/">native integration</a> through Tesla&rsquo;s cloud and with some Lovelace magic we can make the most out of it on our Dashboards.</p>
+<h3 id="adding-the-integration">Adding the integration</h3>
+<p>The <a href="https://www.home-assistant.io/integrations/tesla/">Tesla integration</a> is available on vanilla Home Assistant. You can either go through the UI or go with the YAML route (I prefer to have my configuration as code whenever possible).</p>
+<p>For the <code>yaml</code> configuration, I&rsquo;ve created a new file under my <code>packages</code> folder called <code>tesla.yaml</code> with the following contents:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">tesla:
+  <span style="color:#66d9ef">username</span>: !secret tesla_email_address
+  <span style="color:#66d9ef">password</span>: !secret tesla_password
+</code></pre></div><p><em>You have to add the corresponding entries on your <code>secrets.yaml</code> file</em></p>
+<p>Restart Home Assistant and this will add a bunch of sensors (and switches) related to your Tesla car.</p>
+<h3 id="getting-the-picture-of-your-tesla">Getting the picture of your Tesla</h3>
+<p>That&rsquo;s pretty easy, go into your Tesla account, select <code>Manage</code> on your car, right click the image and save the PNG somewhere into your <code>www</code> folder. I&rsquo;ve saved mine to <code>www/images/other/tesla.png</code>.</p>
+<h3 id="creating-the-lovelace-card">Creating the lovelace card</h3>
+<p><img src="/images/posts/integrating-your-tesla-with-home-assistant/tesla-lovelace-card.png" alt="Tesla Lovelace Card"></p>
+<p>I&rsquo;ve used the Picture Elements card for many different projects so I knew it would fit me well on this case. I went on creating a <code>cards/tesla.yaml</code> file that I will later on <code>!include</code> on my views.</p>
+<p>I&rsquo;ve separated my sensors into quarters (upper left, upper right, lower left, lower right) and divided my sensors into four different <code>lists</code>/<code>arrays</code> using <code>jinja2</code>. I&rsquo;ve made tuple of <code>(title, sensor)</code> for each sensor I wanted on my card.</p>
+<p>I&rsquo;ve grouped the sensors into four categories: General, Locks, Battery/Charge-related and Temperature:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% set sensors = [
+  <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_online_sensor&#39;</span>,
+  <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_parking_brake_sensor&#39;</span>,
+  <span style="color:#e6db74">&#39;climate.tesla_model_3_hvac_climate_system&#39;</span>,
+  <span style="color:#e6db74">&#39;device_tracker.tesla_model_3_location_tracker&#39;</span>,
+  <span style="color:#e6db74">&#39;sensor.tesla_model_3_mileage_sensor&#39;</span>
+]
+%}
+{% set lock_sensors = [
+  (<span style="color:#e6db74">&#39;Charger door&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_charger_door_lock&#39;</span>),
+  (<span style="color:#e6db74">&#39;Doors&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_door_lock&#39;</span>),
+  (<span style="color:#e6db74">&#39;Frunk&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_frunk_lock&#39;</span>),
+  (<span style="color:#e6db74">&#39;Trunk&#39;</span>,<span style="color:#e6db74">&#39;lock.tesla_model_3_trunk_lock&#39;</span>)
+]
+%}
+{% set battery_sensors = [
+  (<span style="color:#e6db74">&#39;Battery&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_battery_sensor&#39;</span>),
+  (<span style="color:#e6db74">&#39;Charging&#39;</span>, <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_charger_sensor&#39;</span>),
+  (<span style="color:#e6db74">&#39;Range&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_range_sensor&#39;</span>)
+]
+%}
+{% set temp_sensors = [
+  (<span style="color:#e6db74">&#39;Inside&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_temperature_sensor_inside&#39;</span>),
+  (<span style="color:#e6db74">&#39;Outside&#39;</span> ,<span style="color:#e6db74">&#39;sensor.tesla_model_3_temperature_sensor_outside&#39;</span>)
+] 
+%}
+</code></pre></div><p>Since we already have the PNG image and the sensors we want to track, let&rsquo;s get the card started:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">type</span>: picture-elements
+<span style="color:#66d9ef">image</span>: !file /local/images/other/tesla.png
+elements:
+</code></pre></div><p>Then still using <code>jinja2</code> I used the <code>for</code> loops to print out the sensors&rsquo; icons and state :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% for g in sensors %}
+- <span style="color:#66d9ef">type</span>: state-icon
+  <span style="color:#66d9ef">entity</span>: {{ g }}
+  style:
+    <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">top</span>: 5px
+    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
+- <span style="color:#66d9ef">type</span>: state-label
+  <span style="color:#66d9ef">entity</span>: {{ g }}
+  style:
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">top</span>: 5px
+    <span style="color:#66d9ef">right</span>: 30px
+    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+{% endfor -%}
+{% for g in lock_sensors %}
+- <span style="color:#66d9ef">type</span>: state-icon
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  style:
+    <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">top</span>: 5px
+    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
+- <span style="color:#66d9ef">type</span>: state-label
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
+  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  style:
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">top</span>: 5px
+    <span style="color:#66d9ef">left</span>: 30px
+    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+{% endfor -%}
+{% for g in battery_sensors %}
+- <span style="color:#66d9ef">type</span>: state-icon
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  style:
+    <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">bottom</span>: 10px
+    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
+- <span style="color:#66d9ef">type</span>: state-label
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
+  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  style:
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">bottom</span>: 5px
+    <span style="color:#66d9ef">left</span>: 30px
+    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+{% endfor -%}
+{% for g in temp_sensors %}
+- <span style="color:#66d9ef">type</span>: state-icon
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  style:
+    <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">bottom</span>: 10px
+    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
+- <span style="color:#66d9ef">type</span>: state-label
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
+  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
+  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  style:
+    <span style="color:#66d9ef">transform</span>: initial
+    <span style="color:#66d9ef">font-size</span>: 1em
+    <span style="color:#66d9ef">line-height</span>: 2em
+    <span style="color:#66d9ef">bottom</span>: 5px
+    <span style="color:#66d9ef">right</span>: 30px
+    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
+{% endfor -%}
+</code></pre></div><p>This will go through all your sensors and plot them in the four corners. If you want to customize them, use the <a href="https://www.home-assistant.io/docs/configuration/customizing-devices/">Customize settings</a> and it should react accordingly!</p>
+<p>You can check out the full code <a href="https://gist.github.com/jseidl/571889c1f5e05b3164f9c87fe5e8a474">here</a>.</p>
+<p>Do you have any other cool ideas on UI or automations for the Tesla? Let me know in the comments!</p>
+        </div>
+      </div>
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        
+        
+        
+        <h3>You might also be interested in:</h3>
+        <ul>
+          
+          <li><a href="/posts/lovelace-residents-card-for-home-assistant/">Create a custom &#39;Residents&#39; card in your Home Assistant&#39;s dashboard</a></li>
+          
+          <li><a href="/posts/battery-level-tricks-with-home-assistant/">Battery level tricks with Home assistant</a></li>
+          
+          <li><a href="/posts/bed-sensor-with-esphome-on-homeassistant/">Making a bed occupancy sensor with bathroom scales, ESP32, HX711 load-cell sensors and ESPHome on Home Assistant</a></li>
+          
+          <li><a href="/posts/multisensors-with-esphome-on-homeassistant/">Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</a></li>
+          
+          <li><a href="/posts/using-alexa-to-greet-you-with-home-assistant/">Using Alexa to greet you with Home Assistant</a></li>
+          
+        </ul>
+        
+      </div>
+      
+      <div class="col-lg-12 mx-auto block shadow">
+        
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "synapse-labs" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://synapselabs.io/" class="d-block pb-3"><img src="/images/logo.png" class="img-fluid" alt="synapse labs 🧠"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/about">About</a></li>
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://twitter.com/jseidl"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/jseidl"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/janseidl"><i class="ti-linkedin"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>© 2020 <a href="https://synapselabs.io">synapse labs</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://synapselabs.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://synapselabs.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/mark.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://synapselabs.io/js/script.min.js"></script>
+
+
+<!-- google analitycs -->
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-163621923-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>
