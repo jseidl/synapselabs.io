@@ -6,10 +6,19 @@
     <description>Recent content in Home Assistant on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 May 2020 11:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 -0800</lastBuildDate>
     
 	<atom:link href="https://synapselabs.io/tags/home-assistant/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Integrating your Tesla with Home Assistant</title>
+      <link>https://synapselabs.io/posts/integrating-your-tesla-with-home-assistant/</link>
+      <pubDate>Mon, 29 Jun 2020 00:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/integrating-your-tesla-with-home-assistant/</guid>
+      <description>&lt;p&gt;Having a sweet electric car is sweet indeed. But integrating it with your home automation system, that&amp;rsquo;s even sweeter! Fortunately Home Assistant has a &lt;a href=&#34;https://www.home-assistant.io/integrations/tesla/&#34;&gt;native integration&lt;/a&gt; through Tesla&amp;rsquo;s cloud and with some Lovelace magic we can make the most out of it on our Dashboards.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Create a custom &#39;Residents&#39; card in your Home Assistant&#39;s dashboard</title>
