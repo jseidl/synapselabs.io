@@ -95,25 +95,39 @@
           <p>Having a sweet electric car is sweet indeed. But integrating it with your home automation system, that&rsquo;s even sweeter! Fortunately Home Assistant has a <a href="https://www.home-assistant.io/integrations/tesla/">native integration</a> through Tesla&rsquo;s cloud and with some Lovelace magic we can make the most out of it on our Dashboards.</p>
 <h3 id="adding-the-integration">Adding the integration</h3>
 <p>The <a href="https://www.home-assistant.io/integrations/tesla/">Tesla integration</a> is available on vanilla Home Assistant. You can either go through the UI or go with the YAML route (I prefer to have my configuration as code whenever possible).</p>
-<p>For the <code>yaml</code> configuration, I&rsquo;ve created a new file under my <code>packages</code> folder called <code>tesla.yaml</code> with the following contents:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">tesla:
+<p>For the <code>yaml</code> configuration, I&rsquo;ve created a new file under my <code>packages</code> folder called <code>tesla.yaml</code> with the following contents. We&rsquo;ll be doing the basic configuration (credentials) and a little additional configuration such as bumping up the <code>scan_interval</code> to 15 minutes (<code>300</code> seconds) to save on the car&rsquo;s battery and some <code>customization</code> to get the names right for the cards:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">homeassistant:
+  customize_glob:
+    <span style="color:#e6db74">&#39;lock.tesla_*_door_lock&#39;</span>:
+      <span style="color:#66d9ef">friendly_name</span>: Doors
+    <span style="color:#e6db74">&#39;lock.tesla_*_charger_door_lock&#39;</span>:
+      <span style="color:#66d9ef">friendly_name</span>: Charger Door
+    <span style="color:#e6db74">&#39;lock.tesla_*_frunk_lock&#39;</span>:
+      <span style="color:#66d9ef">friendly_name</span>: Frunk
+    <span style="color:#e6db74">&#39;lock.tesla_*_trunk_lock&#39;</span>:
+      <span style="color:#66d9ef">friendly_name</span>: Trunk
+    <span style="color:#e6db74">&#39;binary_sensor.tesla_*_parking_brake_sensor&#39;</span>:
+      <span style="color:#66d9ef">friendly_name</span>: Parking Brake
+
+tesla:
   <span style="color:#66d9ef">username</span>: !secret tesla_email_address
   <span style="color:#66d9ef">password</span>: !secret tesla_password
+  <span style="color:#66d9ef">scan_interval</span>: <span style="color:#ae81ff">900</span> <span style="color:#75715e"># 15 min</span>
 </code></pre></div><p><em>You have to add the corresponding entries on your <code>secrets.yaml</code> file</em></p>
 <p>Restart Home Assistant and this will add a bunch of sensors (and switches) related to your Tesla car.</p>
 <h3 id="getting-the-picture-of-your-tesla">Getting the picture of your Tesla</h3>
 <p>That&rsquo;s pretty easy, go into your Tesla account, select <code>Manage</code> on your car, right click the image and save the PNG somewhere into your <code>www</code> folder. I&rsquo;ve saved mine to <code>www/images/other/tesla.png</code>.</p>
 <h3 id="creating-the-lovelace-card">Creating the lovelace card</h3>
 <p><img src="/images/posts/integrating-your-tesla-with-home-assistant/tesla-lovelace-card.png" alt="Tesla Lovelace Card"></p>
-<p>I&rsquo;ve used the Picture Elements card for many different projects so I knew it would fit me well on this case. I went on creating a <code>cards/tesla.yaml</code> file that I will later on <code>!include</code> on my views.</p>
+<p>I wanted to have a card with all the important data on it so I can add to my &ldquo;Console&rdquo; view. I&rsquo;ve used the Picture Elements card for many different projects so I knew it would fit me well on this case. I went on creating a <code>cards/tesla.yaml</code> file that I will later on <code>!include</code> on my views.</p>
 <p>I&rsquo;ve separated my sensors into quarters (upper left, upper right, lower left, lower right) and divided my sensors into four different <code>lists</code>/<code>arrays</code> using <code>jinja2</code>. I&rsquo;ve made tuple of <code>(title, sensor)</code> for each sensor I wanted on my card.</p>
-<p>I&rsquo;ve grouped the sensors into four categories: General, Locks, Battery/Charge-related and Temperature:</p>
+<p>I&rsquo;ve grouped the sensors into four categories: General, Locks, Battery/Charge-related and Temperature. I&rsquo;ve added them as tuples where mostly is <code>(title, entity)</code> except the first one that is <code>(entity, show_friendly_name_instead_of_state)</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% set sensors = [
-  <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_online_sensor&#39;</span>,
-  <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_parking_brake_sensor&#39;</span>,
-  <span style="color:#e6db74">&#39;climate.tesla_model_3_hvac_climate_system&#39;</span>,
-  <span style="color:#e6db74">&#39;device_tracker.tesla_model_3_location_tracker&#39;</span>,
-  <span style="color:#e6db74">&#39;sensor.tesla_model_3_mileage_sensor&#39;</span>
+  (<span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_online_sensor&#39;</span>, False),
+  (<span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_parking_brake_sensor&#39;</span>, True),
+  (<span style="color:#e6db74">&#39;climate.tesla_model_3_hvac_climate_system&#39;</span>, False),
+  (<span style="color:#e6db74">&#39;device_tracker.tesla_model_3_location_tracker&#39;</span>, False),
+  (<span style="color:#e6db74">&#39;sensor.tesla_model_3_mileage_sensor&#39;</span>, False)
 ]
 %}
 {% set lock_sensors = [
@@ -141,7 +155,7 @@ elements:
 </code></pre></div><p>Then still using <code>jinja2</code> I used the <code>for</code> loops to print out the sensors&rsquo; icons and state :</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% for g in sensors %}
 - <span style="color:#66d9ef">type</span>: state-icon
-  <span style="color:#66d9ef">entity</span>: {{ g }}
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.0</span> }}
   style:
     <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
     <span style="color:#66d9ef">top</span>: 5px
@@ -151,7 +165,8 @@ elements:
     <span style="color:#66d9ef">line-height</span>: 2em
     <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
 - <span style="color:#66d9ef">type</span>: state-label
-  <span style="color:#66d9ef">entity</span>: {{ g }}
+  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.0</span> }}
+  {<span style="color:#66d9ef">% if g.1 %}attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>{% endif %}
   style:
     <span style="color:#66d9ef">transform</span>: initial
     <span style="color:#66d9ef">font-size</span>: 1em
@@ -174,7 +189,7 @@ elements:
 - <span style="color:#66d9ef">type</span>: state-label
   <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
   <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  <span style="color:#66d9ef">attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>
   style:
     <span style="color:#66d9ef">transform</span>: initial
     <span style="color:#66d9ef">font-size</span>: 1em
@@ -230,7 +245,18 @@ elements:
     <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
 {% endfor -%}
 </code></pre></div><p>This will go through all your sensors and plot them in the four corners. If you want to customize them, use the <a href="https://www.home-assistant.io/docs/configuration/customizing-devices/">Customize settings</a> and it should react accordingly!</p>
-<p>You can check out the full code <a href="https://gist.github.com/jseidl/571889c1f5e05b3164f9c87fe5e8a474">here</a>.</p>
+<p>You can check out the full code for the card <a href="https://gist.github.com/jseidl/571889c1f5e05b3164f9c87fe5e8a474">here</a>.</p>
+<h3 id="creating-the-tesla-lovelace-view">Creating the Tesla Lovelace view</h3>
+<p><img src="/images/posts/integrating-your-tesla-with-home-assistant/tesla-view.jpg" alt="Tesla Lovelace Card"></p>
+<p>A few days after having the card on my main view, I decided I wanted to have also a dedicated view for the car information. I used pretty much standard cards, except for the <a href="https://github.com/custom-cards/bar-card">Bar Card</a> for the progress bars and <a href="https://github.com/nervetattoo/simple-thermostat">Simple Thermostat</a> for the A/C control.</p>
+<ul>
+<li>Temperature graphs and A/C control (Simple Thermostat - Add-on)</li>
+<li>Battery &amp; Range graphs + progress bars (Graph card + Bar Card)</li>
+<li>Map showing the car&rsquo;s location (Map card - Built-in)</li>
+<li>All locks (Entities card)</li>
+<li>All switches (Entities card)</li>
+</ul>
+<p>You can check out the full code for the view <a href="https://gist.github.com/jseidl/24d33f78db2eb993712d3341d78d9f3d">here</a>.</p>
 <p>Do you have any other cool ideas on UI or automations for the Tesla? Let me know in the comments!</p>
         </div>
       </div>
