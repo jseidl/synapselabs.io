@@ -9,7 +9,7 @@
     content="Make your car part of your home. Integrate your Telsa (Model S, Model 3, Model X or Model Y) with Home Assistant">
   
   <meta name="author" content="Jan Seidl">
-  <meta name="generator" content="Hugo 0.65.3" />
+  <meta name="generator" content="Hugo 0.76.4" />
 
   <!-- plugins -->
   
@@ -97,23 +97,23 @@
 <h3 id="adding-the-integration">Adding the integration</h3>
 <p>The <a href="https://www.home-assistant.io/integrations/tesla/">Tesla integration</a> is available on vanilla Home Assistant. You can either go through the UI or go with the YAML route (I prefer to have my configuration as code whenever possible).</p>
 <p>For the <code>yaml</code> configuration, I&rsquo;ve created a new file under my <code>packages</code> folder called <code>tesla.yaml</code> with the following contents. We&rsquo;ll be doing the basic configuration (credentials) and a little additional configuration such as bumping up the <code>scan_interval</code> to 15 minutes (<code>300</code> seconds) to save on the car&rsquo;s battery and some <code>customization</code> to get the names right for the cards:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">homeassistant:
-  customize_glob:
-    <span style="color:#e6db74">&#39;lock.tesla_*_door_lock&#39;</span>:
-      <span style="color:#66d9ef">friendly_name</span>: Doors
-    <span style="color:#e6db74">&#39;lock.tesla_*_charger_door_lock&#39;</span>:
-      <span style="color:#66d9ef">friendly_name</span>: Charger Door
-    <span style="color:#e6db74">&#39;lock.tesla_*_frunk_lock&#39;</span>:
-      <span style="color:#66d9ef">friendly_name</span>: Frunk
-    <span style="color:#e6db74">&#39;lock.tesla_*_trunk_lock&#39;</span>:
-      <span style="color:#66d9ef">friendly_name</span>: Trunk
-    <span style="color:#e6db74">&#39;binary_sensor.tesla_*_parking_brake_sensor&#39;</span>:
-      <span style="color:#66d9ef">friendly_name</span>: Parking Brake
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">homeassistant</span>:
+  <span style="color:#f92672">customize_glob</span>:
+    <span style="color:#f92672">&#39;lock.tesla_*_door_lock&#39;</span>:
+      <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Doors</span>
+    <span style="color:#f92672">&#39;lock.tesla_*_charger_door_lock&#39;</span>:
+      <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Charger Door</span>
+    <span style="color:#f92672">&#39;lock.tesla_*_frunk_lock&#39;</span>:
+      <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Frunk</span>
+    <span style="color:#f92672">&#39;lock.tesla_*_trunk_lock&#39;</span>:
+      <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Trunk</span>
+    <span style="color:#f92672">&#39;binary_sensor.tesla_*_parking_brake_sensor&#39;</span>:
+      <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Parking Brake</span>
 
-tesla:
-  <span style="color:#66d9ef">username</span>: !secret tesla_email_address
-  <span style="color:#66d9ef">password</span>: !secret tesla_password
-  <span style="color:#66d9ef">scan_interval</span>: <span style="color:#ae81ff">900</span> <span style="color:#75715e"># 15 min</span>
+<span style="color:#f92672">tesla</span>:
+  <span style="color:#f92672">username</span>: !<span style="color:#ae81ff">secret tesla_email_address</span>
+  <span style="color:#f92672">password</span>: !<span style="color:#ae81ff">secret tesla_password</span>
+  <span style="color:#f92672">scan_interval</span>: <span style="color:#ae81ff">900</span> <span style="color:#75715e"># 15 min</span>
 </code></pre></div><p><em>You have to add the corresponding entries on your <code>secrets.yaml</code> file</em></p>
 <p>Restart Home Assistant and this will add a bunch of sensors (and switches) related to your Tesla car.</p>
 <h3 id="getting-the-picture-of-your-tesla">Getting the picture of your Tesla</h3>
@@ -124,128 +124,128 @@ tesla:
 <p>I wanted to have a card with all the important data on it so I can add to my &ldquo;Console&rdquo; view. I&rsquo;ve used the <a href="https://www.home-assistant.io/lovelace/picture-elements/">Picture Elements</a> card for many different projects so I knew it would fit me well on this case. I went on creating a <code>cards/tesla.yaml</code> file that I will later on <code>!include</code> on my views.</p>
 <p>I&rsquo;ve separated my sensors into quarters (upper left, upper right, lower left, lower right) and divided my sensors into four different <code>lists</code>/<code>arrays</code> using <code>jinja2</code>. I&rsquo;ve made tuple of <code>(title, sensor)</code> for each sensor I wanted on my card.</p>
 <p>I&rsquo;ve grouped the sensors into four categories: General, Locks, Battery/Charge-related and Temperature. I&rsquo;ve added them as tuples where mostly is <code>(title, entity)</code> except the first one that is <code>(entity, show_friendly_name_instead_of_state)</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% set sensors = [
-  (<span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_online_sensor&#39;</span>, False),
-  (<span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_parking_brake_sensor&#39;</span>, True),
-  (<span style="color:#e6db74">&#39;climate.tesla_model_3_hvac_climate_system&#39;</span>, False),
-  (<span style="color:#e6db74">&#39;device_tracker.tesla_model_3_location_tracker&#39;</span>, False),
-  (<span style="color:#e6db74">&#39;sensor.tesla_model_3_mileage_sensor&#39;</span>, False)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{<span style="color:#ae81ff">% set sensors = [</span>
+  <span style="color:#ae81ff">(&#39;binary_sensor.tesla_model_3_online_sensor&#39;, False),</span>
+  <span style="color:#ae81ff">(&#39;binary_sensor.tesla_model_3_parking_brake_sensor&#39;, True),</span>
+  <span style="color:#ae81ff">(&#39;climate.tesla_model_3_hvac_climate_system&#39;, False),</span>
+  <span style="color:#ae81ff">(&#39;device_tracker.tesla_model_3_location_tracker&#39;, False),</span>
+  <span style="color:#ae81ff">(&#39;sensor.tesla_model_3_mileage_sensor&#39;, False)</span>
 ]
-%}
-{% set lock_sensors = [
-  (<span style="color:#e6db74">&#39;Charger door&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_charger_door_lock&#39;</span>),
-  (<span style="color:#e6db74">&#39;Doors&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_door_lock&#39;</span>),
-  (<span style="color:#e6db74">&#39;Frunk&#39;</span>, <span style="color:#e6db74">&#39;lock.tesla_model_3_frunk_lock&#39;</span>),
-  (<span style="color:#e6db74">&#39;Trunk&#39;</span>,<span style="color:#e6db74">&#39;lock.tesla_model_3_trunk_lock&#39;</span>)
+<span style="color:#ae81ff">%}</span>
+{<span style="color:#ae81ff">% set lock_sensors = [</span>
+  <span style="color:#ae81ff">(&#39;Charger door&#39;, &#39;lock.tesla_model_3_charger_door_lock&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Doors&#39;, &#39;lock.tesla_model_3_door_lock&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Frunk&#39;, &#39;lock.tesla_model_3_frunk_lock&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Trunk&#39;,&#39;lock.tesla_model_3_trunk_lock&#39;)</span>
 ]
-%}
-{% set battery_sensors = [
-  (<span style="color:#e6db74">&#39;Battery&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_battery_sensor&#39;</span>),
-  (<span style="color:#e6db74">&#39;Charging&#39;</span>, <span style="color:#e6db74">&#39;binary_sensor.tesla_model_3_charger_sensor&#39;</span>),
-  (<span style="color:#e6db74">&#39;Range&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_range_sensor&#39;</span>)
+<span style="color:#ae81ff">%}</span>
+{<span style="color:#ae81ff">% set battery_sensors = [</span>
+  <span style="color:#ae81ff">(&#39;Battery&#39;, &#39;sensor.tesla_model_3_battery_sensor&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Charging&#39;, &#39;binary_sensor.tesla_model_3_charger_sensor&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Range&#39;, &#39;sensor.tesla_model_3_range_sensor&#39;)</span>
 ]
-%}
-{% set temp_sensors = [
-  (<span style="color:#e6db74">&#39;Inside&#39;</span>, <span style="color:#e6db74">&#39;sensor.tesla_model_3_temperature_sensor_inside&#39;</span>),
-  (<span style="color:#e6db74">&#39;Outside&#39;</span> ,<span style="color:#e6db74">&#39;sensor.tesla_model_3_temperature_sensor_outside&#39;</span>)
+<span style="color:#ae81ff">%}</span>
+{<span style="color:#ae81ff">% set temp_sensors = [</span>
+  <span style="color:#ae81ff">(&#39;Inside&#39;, &#39;sensor.tesla_model_3_temperature_sensor_inside&#39;),</span>
+  <span style="color:#ae81ff">(&#39;Outside&#39; ,&#39;sensor.tesla_model_3_temperature_sensor_outside&#39;)</span>
 ] 
-%}
+<span style="color:#ae81ff">%}</span>
 </code></pre></div><p>Since we already have the PNG image and the sensors we want to track, let&rsquo;s get the card started:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">type</span>: picture-elements
-<span style="color:#66d9ef">image</span>: !file /local/images/other/tesla.png
-elements:
-</code></pre></div><p>Then still using <code>jinja2</code> I used the <code>for</code> loops to print out the sensors&rsquo; icons and state :</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{% for g in sensors %}
-- <span style="color:#66d9ef">type</span>: state-icon
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  style:
-    <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">top</span>: 5px
-    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
-- <span style="color:#66d9ef">type</span>: state-label
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  {<span style="color:#66d9ef">% if g.1 %}attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>{% endif %}
-  style:
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">top</span>: 5px
-    <span style="color:#66d9ef">right</span>: 30px
-    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-{% endfor -%}
-{% for g in lock_sensors %}
-- <span style="color:#66d9ef">type</span>: state-icon
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  style:
-    <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">top</span>: 5px
-    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
-- <span style="color:#66d9ef">type</span>: state-label
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  <span style="color:#66d9ef">attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>
-  style:
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">top</span>: 5px
-    <span style="color:#66d9ef">left</span>: 30px
-    <span style="color:#66d9ef">margin-top</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-{% endfor -%}
-{% for g in battery_sensors %}
-- <span style="color:#66d9ef">type</span>: state-icon
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  style:
-    <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">bottom</span>: 10px
-    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
-- <span style="color:#66d9ef">type</span>: state-label
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
-  style:
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">bottom</span>: 5px
-    <span style="color:#66d9ef">left</span>: 30px
-    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-{% endfor -%}
-{% for g in temp_sensors %}
-- <span style="color:#66d9ef">type</span>: state-icon
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  style:
-    <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">bottom</span>: 10px
-    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
-- <span style="color:#66d9ef">type</span>: state-label
-  <span style="color:#66d9ef">entity</span>: {{ g<span style="color:#ae81ff">.1</span> }}
-  <span style="color:#66d9ef">title</span>: {{ g<span style="color:#ae81ff">.0</span> }}
-  <span style="color:#66d9ef">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
-  style:
-    <span style="color:#66d9ef">transform</span>: initial
-    <span style="color:#66d9ef">font-size</span>: 1em
-    <span style="color:#66d9ef">line-height</span>: 2em
-    <span style="color:#66d9ef">bottom</span>: 5px
-    <span style="color:#66d9ef">right</span>: 30px
-    <span style="color:#66d9ef">margin-bottom</span>: {{ loop.index0<span style="color:#75715e">*32</span> }}px
-{% endfor -%}
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">type</span>: <span style="color:#ae81ff">picture-elements</span>
+<span style="color:#f92672">image</span>: !<span style="color:#ae81ff">file /local/images/other/tesla.png</span>
+<span style="color:#f92672">elements</span>:
+</code></pre></div><p>Then still using <code>jinja2</code> I used the <code>for</code> loops to print out the sensors' icons and state :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">{<span style="color:#ae81ff">% for g in sensors %}</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-icon</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.0 }}</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">right</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">top</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">margin-top</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.0 }}</span>
+  {<span style="color:#f92672">% if g.1 %}attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>{<span style="color:#ae81ff">% endif %}</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">top</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">right</span>: <span style="color:#ae81ff">30px</span>
+    <span style="color:#f92672">margin-top</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+{<span style="color:#ae81ff">% endfor -%}</span>
+{<span style="color:#ae81ff">% for g in lock_sensors %}</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-icon</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">left</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">top</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">margin-top</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">title</span>: {{ <span style="color:#ae81ff">g.0 }}</span>
+  <span style="color:#f92672">attribute</span>: <span style="color:#e6db74">&#39;friendly_name&#39;</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">top</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">left</span>: <span style="color:#ae81ff">30px</span>
+    <span style="color:#f92672">margin-top</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+{<span style="color:#ae81ff">% endfor -%}</span>
+{<span style="color:#ae81ff">% for g in battery_sensors %}</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-icon</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">left</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">10px</span>
+    <span style="color:#f92672">margin-bottom</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">title</span>: {{ <span style="color:#ae81ff">g.0 }}</span>
+  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">left</span>: <span style="color:#ae81ff">30px</span>
+    <span style="color:#f92672">margin-bottom</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+{<span style="color:#ae81ff">% endfor -%}</span>
+{<span style="color:#ae81ff">% for g in temp_sensors %}</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-icon</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">right</span>: <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">10px</span>
+    <span style="color:#f92672">margin-bottom</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+  <span style="color:#f92672">entity</span>: {{ <span style="color:#ae81ff">g.1 }}</span>
+  <span style="color:#f92672">title</span>: {{ <span style="color:#ae81ff">g.0 }}</span>
+  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;{{ g.0 }}: &#34;</span>
+  <span style="color:#f92672">style</span>:
+    <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+    <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1em</span>
+    <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+    <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">5px</span>
+    <span style="color:#f92672">right</span>: <span style="color:#ae81ff">30px</span>
+    <span style="color:#f92672">margin-bottom</span>: {{ <span style="color:#ae81ff">loop.index0*32 }}px</span>
+{<span style="color:#ae81ff">% endfor -%}</span>
 </code></pre></div><p>This will go through all your sensors and plot them in the four corners. If you want to customize them, use the <a href="https://www.home-assistant.io/docs/configuration/customizing-devices/">Customize settings</a> and it should react accordingly!</p>
 <p>You can check out the full code for the card <a href="https://gist.github.com/jseidl/571889c1f5e05b3164f9c87fe5e8a474">here</a>.</p>
 <h3 id="creating-the-tesla-lovelace-view">Creating the Tesla Lovelace view</h3>

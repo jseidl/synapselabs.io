@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Custom Component on synapse labs 🧠</title>
+    <link>https://synapselabs.io/tags/custom-component/</link>
+    <description>Recent content in Custom Component on synapse labs 🧠</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 13 Oct 2020 09:00:00 -0800</lastBuildDate><atom:link href="https://synapselabs.io/tags/custom-component/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Master local presence and bring Home Assistant&#39;s areas to life with Magic Areas</title>
+      <link>https://synapselabs.io/posts/bring-home-assistant-area-to-life-with-magic-areas/</link>
+      <pubDate>Tue, 13 Oct 2020 09:00:00 -0800</pubDate>
+      
+      <guid>https://synapselabs.io/posts/bring-home-assistant-area-to-life-with-magic-areas/</guid>
+      <description>&lt;p&gt;My biggest personal challenge in home automation is a quest to make everyday commoner tasks &amp;ndash; such as turning on and off lights, fans, air conditioners and media devices &amp;ndash; a thing of the past. My ultimate intent is to just do whatever I want to do and for &lt;del&gt;Skynet&lt;/del&gt; the house to figure it out what it is and act accordingly and when I&amp;rsquo;m done I can just walk away and things will turn off themselves. After a few years experimenting with all sorts of stuff, learning how to develop on Home Assistant, I finally came up with a custom component that replaced hundreds of lines of YAML and made me much closer to my goal.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -6,11 +6,7 @@
     <description>Recent content in Neopixel on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Apr 2020 09:00:15 -0800</lastBuildDate>
-    
-	<atom:link href="https://synapselabs.io/tags/neopixel/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 04 Apr 2020 09:00:15 -0800</lastBuildDate><atom:link href="https://synapselabs.io/tags/neopixel/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</title>
       <link>https://synapselabs.io/posts/multisensors-with-esphome-on-homeassistant/</link>

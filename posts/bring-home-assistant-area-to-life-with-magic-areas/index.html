@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Master local presence and bring Home Assistant&#39;s areas to life with Magic Areas</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="I&#39;ve made a Home Assistant custom component to handle common automations and aggregations for areas of your smart home">
+  
+  <meta name="author" content="Jan Seidl">
+  <meta name="generator" content="Hugo 0.76.4" />
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://synapselabs.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://synapselabs.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://synapselabs.io/images/favicon.png " type="image/x-icon">
+
+  </head><body>
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://synapselabs.io/"><img class="img-fluid" src="/images/logo.png" alt="synapse labs 🧠"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://synapselabs.io/"> Home </a>
+          </li>
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/about">About</a>
+            </li>
+            
+          
+            
+            <li class="nav-item">
+              <a class="nav-link" href="https://synapselabs.io/contact">Contact</a>
+            </li>
+            
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://synapselabs.io//search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        <h2>Master local presence and bring Home Assistant&rsquo;s areas to life with Magic Areas</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/jan-seidl">Jan Seidl</a>,
+          October 13, 2020, in 
+          <a href="/categories/home-automation">Home automation</a>
+          
+        </div>
+        
+        <div class="content">
+          <p>My biggest personal challenge in home automation is a quest to make everyday commoner tasks &ndash; such as turning on and off lights, fans, air conditioners and media devices &ndash; a thing of the past. My ultimate intent is to just do whatever I want to do and for <del>Skynet</del> the house to figure it out what it is and act accordingly and when I&rsquo;m done I can just walk away and things will turn off themselves. After a few years experimenting with all sorts of stuff, learning how to develop on Home Assistant, I finally came up with a custom component that replaced hundreds of lines of YAML and made me much closer to my goal.</p>
+<blockquote>
+<p><strong>TL;DR</strong>: If you don&rsquo;t care about the story <del>nor my feelings</del> and just wanna get on to how awesome Magic Areas is, click <a href="#magic-areas">here</a>.</p>
+</blockquote>
+<h3 id="background">Background</h3>
+<h4 id="the-remote-controlled-house">The remote-controlled house</h4>
+<p>When I first started playing around with Home Assistant, I had only a couple of <a href="/posts/multisensors-with-esphome-on-homeassistant/">DIY Multisensors I&rsquo;ve built</a>, a few Philips Hue bulbs and that&rsquo;s it. I would access Home Assistant&rsquo;s UI over my phone&rsquo;s browser and fool around turning lights on and off and changing colors. I believe this is the first stage everyone that starts messing around with smart homes goes through.</p>
+<p>Don&rsquo;t get me wrong. Many people take pride on showing their Google Home/Homekit <del>bullshit</del> and how they can turn a bunch of proprietary stuff on and off, <del>I pity you</del> right on, bro! I&rsquo;ve been writing bots and automations for many different processes all my life and for me, controlling things with my phone was cute but mostly a party trick. In my opinion, one cannot say something is smart if it relies on a 3rd party command to <del>do shit</del> perform actions.</p>
+<p>This needed less human interaction. More machine &ldquo;brains&rdquo;. (No, I&rsquo;m not talking about AI, yet)</p>
+<h4 id="the-automatic-house">The automatic house</h4>
+<p>Frustrated with my medieval way of having to pull my phone off every now and then to control stuff, I quickly went on and through the power of Home Assistant&rsquo;s automations, made the motion sensors in my DIY multisensors trigger the Hue bulbs, making them no better than those motion-activated lights on public restrooms.</p>
+<p>That wasn&rsquo;t enough. Even though it was a good improvement from having to manually flip light switches <del>like a primate</del> myself, I now had the problem which the lights would go out on me while I was in the room just because I was sitting still (like watching TV, <del>looking at my phone in the bathroom</del> or at the computer).</p>
+<p>There was a lot of trial-and-error testing different <code>clear timeouts</code> on the automations so it wouldn&rsquo;t shut the lights on us. Too little and they go off too often. Too much and you can&rsquo;t just leave the room <del>like a badass</del> unless you&rsquo;re willing to have lights just chomping electrons for no reason.</p>
+<p>Also, suffice to say, my wife was <strong>NOT</strong> happy.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/many_devices.png#floatright" alt="Way too many sensors but still not enough"></p>
+<h4 id="at-first-there-were-few-now-there-are-many">At first, there were few. Now, there are many</h4>
+<p>My Hue kit came with 3 color bulbs, which I placed one in the Living Room, one in the Bedroom and one in our Home Office/Lab/<del>Evil lair</del> so I made 3 DIY multisensors. I had the same automations copy-pasted-and-adjusted for every room, triggering the bulbs when the motion sensors on the multisensors detected movement, turning them off when they&rsquo;re idle for some minutes.</p>
+<p>After some while I got some white hue bulbs and some Z-Wave multisensors which I&rsquo;ve put on my front door and on my patio, then as time went by I&rsquo;ve got Z-Wave light switches, Z-Wave and Zigbee power outlets and went by <em>smartifing</em> other rooms in the condo I lived by that time, so there I was again copying and pasting all those automations over and over again.</p>
+<p>Not to mention that I started to get a taste for Z-wave/Zigbee and have battery-powered Z(wave|igbee) multisensors in addition to my DIY ones, so I could cover more angles and mitigate my long timeouts. I started first listing both of them on my automation triggers, then realized it was smarter to have a group, so I did that too for every room in the house. Then I did a template <code>binary_sensor</code>, based on the state of the group, with the <code>occupancy</code> <code>device_class</code>. This was my first effort on trying to maintain a room <code>state</code>.</p>
+<p>Can you imagine the pain it was when I wanted to change timeouts or the automations themselves? It was <strong>NOT FUN</strong> going through all those YAML files and replacing code. It started to get out of hand <em>FAST</em>, something needed to be done.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/area_temp_aggr.png#floatright" alt="Aggregate sensors"></p>
+<h4 id="sensor-aggregation">Sensor aggregation</h4>
+<p>By having only one multisensor per room, I realized I was getting biased readings. Sensors on window frames would reflect more the outside temperature rather than the internal, due to being stuck into metal frames. Sensors near heat sources (TV, computer) would read temperatures hotter than the room itself.</p>
+<p>My immediate solution was to have more than 1 multisensor in a room and average their results to get something closer to reality. Having several multisensors around the same area gives you the luxury of discarding data from some (like temperature from the ones in the metal frames) as well.</p>
+<p>Once again, there I was furiously crafting YAML files for my <code>min/max mean</code> sensors for every room, for temperature, humidity, luminosity&hellip; you get the gist.</p>
+<h3 id="the-problem">The Problem</h3>
+<h4 id="what-presence-means">What presence means?</h4>
+<p>When I first started trying to solve room presence, I coined two terms: Global Presence and Local Presence. One is reliable (if you do it right) and straightforward. The other is almost an art form.</p>
+<p>Global Presence is the bread and butter of letting your smart home controller know that you&rsquo;re at home or away. This is usually done by either (<a href="https://github.com/helto4real/hassio-add-ons/tree/master/presence">or a combination of</a>) <code>device_trackers</code> with GPS and/or network presence and Bluetooth/BLE monitors.</p>
+<p>Local Presence is the tricky part: letting the smart home controller know which room of your house you&rsquo;re in. It creates the mental exercise of thinking: Which devices and which states they&rsquo;re found that can be classified as the room being in use? After some experimenting, I&rsquo;ve compiled the following list:</p>
+<dl>
+<dt>Devices connected on the network</dt>
+<dd>Some devices aren&rsquo;t always online and only connect to your network when you turn them on (e.g. some Smart TVs)</dd>
+<dt>Motion Sensors</dt>
+<dd>Well, obviously</dd>
+<dt>Media Players</dt>
+<dd>When on state <code>playing</code>. Usually when something is playing it means the room is being used. YMMV.</dd>
+<dt>Doors / Covers</dt>
+<dd>Some doors being <code>open</code> may be considered as a presence sensor. For example, when my front door is open it means my <code>front_door</code> and <code>entrance_hall</code> areas are occupied. For my garage, both the garage door (exposed as a <code>cover</code> to Home Assistant) and the door in the kitchen that goes to the garage being open mean that the <code>garage</code> area is occupied.</dd>
+<dt>Power consumption</dt>
+<dd>Metered smart outlets are the swiss-army knife of state detection for non-smart things. You can use it to detect operating state of devices that sleep (e.g. videogame consoles), cellphones charging, if the laptop is connected to my dock station, if you&rsquo;re working out on a treadmill or stationary bike, etc.</dd>
+<dt>Weight measurement and Capacitive/Flex sensors</dt>
+<dd>If you&rsquo;re a regular, you know <a href="/posts/bed-sensor-with-esphome-on-homeassistant/">how I use two bathroom scales to detect occupancy on my bed</a>. The same could be made with capacitive or flex sensors.</dd>
+<dt>Leak sensors</dt>
+<dd>These can work to detect presence in bathrooms while you&rsquo;re on the shower. The catch is that not all devices can work receiving a shower on its head and that depending on the placement they can take a while to clear.</dd>
+</dl>
+<p>So that&rsquo;s my non-exhaustive list of <em>presency things</em>, I needed a way of tieing these together in order to determine the room state. I tried doing that with Home Assistant primitives at first, a bunch of template <code>sensors</code> and <code>binary_sensors</code>, two kilos of <code>automations</code> <del>and the sacrifice of a goat</del> but things were very janky and a pain to debug. I knew that I would need to start digging into the developer documentation and to write a <code>custom_component</code> that I could only pass configuration parameters such as the room name and the <code>entity_ids</code> and be done with it.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/area_presence_hold_switch.jfif#floatright" alt="Presence Hold switch, exposed to Google Home"></p>
+<h4 id="manual-override-the-presence-hold">Manual override: The Presence Hold</h4>
+<p>There are situations where you might not be able to sense presence (as sitting perfectly still reading a book) in which having a manual override for the room presence status is a must. I&rsquo;ve accomplished this in the past by having a template &lsquo;switch&rsquo; in Home Assistant that I&rsquo;d use as a condition on my automations. I called this functionality <em>Presence Hold</em>.</p>
+<p>My first shot at implementing this in a component was a complete bust. Worked part of the time and wasn&rsquo;t very reliable. The flaw wasn&rsquo;t in the code per se, but the logic behind it was completely flawed, which I&rsquo;ll go more in depth in our next section below.</p>
+<h3 id="first-shot-a-custom_components-the-room-component">First shot a custom_components, the Room component</h3>
+<p>After much grief juggling dozens of automation <code>YAML</code> files, I decided to put on my big boi pants and read <a href="https://developers.home-assistant.io/">Home Assistant&rsquo;s developer documentation</a>, which is pretty decent for the most part. I started by dissecting one of the custom components I had already running and checking the APIs in the docs. It&rsquo;s all Python, pretty much straightforward.</p>
+<p>This first component, which I called <a href="https://github.com/jseidl/ha-room">HA Room</a> was my first shot at it. It creates a single <code>occupancy</code> <code>binary_sensor</code> for each area defined in the <code>YAML</code> config that tracks the state of the defined <code>presence_sensors</code> and updates the room occupancy state accordingly. This is a very simple component that does that one task <strong>almost</strong> very well.</p>
+<p>It would be perfect for this single case, if I didn&rsquo;t had screwed up completely the <code>presence hold</code> logic. My idea/logic for this on this component was to have some entities vouch for the <code>presence hold</code> status (like presence on by <a href="/posts/bed-sensor-with-esphome-on-homeassistant/">Bed Sensor</a>) whose states would be tracked by a <em>Presence Hold</em> switch that tracks in order to determine if <code>presence_hold</code> behavior should be enforced. The room presence <code>binary_sensor</code> would check the <code>presence hold</code> status before proceeding with any status change.</p>
+<p>This switch could be manually triggered but as you can imagine, a <code>presence_hold_sensor</code> could go to <code>off</code> turning that switch back off, which was annoying <del>as fuck</del>. Also I had to implement a timed function to update the <code>binary_sensor</code> status, because if all the <code>presence_sensors</code> were <code>off</code> by the time you turned <code>presence hold</code> off, you&rsquo;d be stuck on that <code>on</code> state until you flipped the room state <code>on</code> and <code>off</code> again. Nightmare.</p>
+<p>Presence Hold would work when I had entities who could vouch for the presence hold state but if you wanted to use it as a manual override it was <del>shit</del> disappointing.</p>
+<p>I wasn&rsquo;t super happy about this component, although it was a HUGE change from having to maintain several automations. I did a <a href="https://community.home-assistant.io/t/custom-component-room-presence/154716">small release on the community forums</a>, but that was it. I knew I need to completely revisit this component and make it into something more substantial.</p>
+<p>By that time, Home Assistant was releasing their <em>Area Registry</em> which is still to date not very useful (well, helps on telling your Google Assistant where things are but that&rsquo;s pretty much it). I had a vision on how I thought areas should behave in a smart home since I&rsquo;ve been replicating the same functionalities across several rooms and recently decided to give it another shot.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/area_presence_sensor.jfif#floatright" alt="Aggregate sensors"></p>
+<h3 id="magic-areas">Mastering local presence with Magic Areas</h3>
+<p>After <em>HA Room</em> I had many open questions such as: How can I use <em>Area Registry</em> in this solution? Why also not give the ability of add non-registry-enabled entities like <code>template entities</code> and non-discovery <code>mqtt entities</code>? Why not build my most common automations into the component? Why not make every single behavior configurable? Why not go further than area presence and also go ahead and auto-discover sensor <code>device_class</code> and aggregate them automatically?</p>
+<p><strong>Magic Areas</strong> was born to address all those questions.</p>
+<h4 id="features">Features</h4>
+<ul>
+<li>Uses multiple type of sensors for determining presence on an area.
+<ul>
+<li><code>media_player</code>,  <code>binary_sensors</code> (<code>motion</code>, <code>presence</code>, <code>occupancy</code> and <code>door</code>) are supported.</li>
+</ul>
+</li>
+<li>Loads areas from <em>Area Registry</em> &ndash; <em>No need of handling them elsewhere!</em>.</li>
+<li>Support inclusion of non-device-tied entities (non-discovery MQTT/Template sensors).</li>
+<li>Support exclusion of entities.</li>
+<li>Automatic turn climates and lights on! (All or user-defined).
+<ul>
+<li>Specify a <code>disable_entity</code> for when lights <em>shouldn&rsquo;t</em> turn on (e.g. daytime, high luminance etc)</li>
+<li>Specify a <code>sleep_entity</code> and <code>sleep_lights</code> to have only your accent lights turn on late at night</li>
+</ul>
+</li>
+<li>Automatic turn off lights, climate and media devices.</li>
+<li>Creates a <em>Health</em> sensor (triggered by <code>binary_sensors</code> with <code>problem</code>, <code>smoke</code>, <code>moisture</code>, <code>safety</code> and <code>gas</code> device classes) for each area</li>
+<li>Creates a <em>Presence Hold</em> switch to manually override area presence</li>
+<li>Creates aggregation sensors for your <code>binary_sensor</code>:
+<ul>
+<li>Motion sensors</li>
+<li>Door sensors</li>
+<li>Window sensors</li>
+<li>Leak sensors</li>
+</ul>
+</li>
+<li>Creates average sensors for all your <code>sensor</code></li>
+<li>Creates global (interior/exterior) aggregate and average sensors</li>
+</ul>
+<p>A quick video of some of these features in action can be seen on this tweet I&rsquo;ve sent while I was developing it:
+<blockquote class="twitter-tweet" data-conversation="none"><p lang="en" dir="ltr">This is working great so far. <a href="https://t.co/DQtcaYyE36">pic.twitter.com/DQtcaYyE36</a></p>&mdash; Jan Seidl (@jseidl) <a href="https://twitter.com/jseidl/status/1310111564343644161?ref_src=twsrc%5Etfw">September 27, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+<h4 id="functionalities">Functionalities</h4>
+<p>If you run <em>Magic Areas</em> by default, all options will be enabled. <em>Magic Areas</em> will scan the <em>Areas</em> defined in your registry, go through the devices on those areas and chomp all the entities there.</p>
+<h5 id="area-presence">Area Presence</h5>
+<p>You will have one <code>binary_sensor</code> for each room for tracking the area presence and a manual override <code>presence_hold</code> <code>switch</code> (that only does that, with no crazy flawed logic this time).</p>
+<p>One of the big advantages from <em>HA Room</em> is that I&rsquo;ve took the time to add an <code>active_sensors</code> attribute so you can always see which sensors are keeping the state <code>on</code> for debugging purposes. This practice is applied all around through the aggregation sensors you&rsquo;ll see next.</p>
+<h5 id="managing-entities">Managing entities</h5>
+<p>All entities are pulled from the registry by default. If you did your homework and assigned your devices to areas, you should be done, save a really tricky exception: Standalone entities (entities not tied to a device) such as <code>template</code> entities and non-discovery <code>mqtt</code> entities are not tied to a device thus can never exist in the <em>Area Registry</em> since this registry only accept devices, not entities. These (if they have a <code>unique_id</code> set) can go to the <em>Entity Registry</em> which makes our lives easier but not by that much.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/magic_areas_yaml_config.png" alt="Aggregate sensors"></p>
+<p>This component enables the inclusion of standalone entities over the <code>include_entities</code> configuration parameter.</p>
+<p>You might also have entities in your registry that you (for any particular reason) might not want to be controlled/tracked by <em>Magic Areas</em> and you can easily exclude them over the <code>exclude_entities</code> configuration parameter.</p>
+<h5 id="entity-type-auto-discovery">Entity type auto-discovery</h5>
+<p>In <em>Magic Areas</em> you don&rsquo;t have to tell it much. Just define your entities and the component will probe it&rsquo;s <code>domain</code> (<code>light</code>, <code>climate</code> etc) and <code>device_class</code> (if it&rsquo;s a <code>sensor</code>/<code>binary_sensor</code>) and handle them accordingly. Isn&rsquo;t it a beaut?</p>
+<h5 id="area-sensorbinary_sensor-aggregates">Area sensor/binary_sensor aggregates</h5>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/area_sensor_aggr.png" alt="Aggregate sensors"></p>
+<p>Magic Areas will create one aggregate <code>sensor</code> and <code>binary_sensor</code> for each <code>device_class</code> in that area. <code>sensor</code> aggregates use a <code>mean</code> approach for aggregation while <code>binary_sensor</code> aggregates are <code>on</code> if any of the aggregated sensors' state is <code>on</code>.</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/area_health.png#floatright" alt="Area Health sensor"></p>
+<h5 id="area-health-sensors">Area Health sensors</h5>
+<p>If you have any safety-related sensors such as smoke/CO, tamper or leak (from <code>problem</code>, <code>smoke</code>, <code>moisture</code>, <code>safety</code> and <code>gas</code> device classes in an area, <em>Magic Areas</em> will create a health sensor for this area that will turn <code>on</code> whenever one of the related safety sensors is triggered.</p>
+<p>This is a cool feature if you keep one of those cool <code>picture-elements</code> floorplans and wanna point out which area in specific is in distress.</p>
+<p><em>Note: There&rsquo;s a planned feature to have a global health sensor for the whole house that tracks each area&rsquo;s health sensors. Keep an eye on <a href="https://github.com/jseidl/hass-magic_areas/issues/3">this GitHub issue</a> for news on that feature!</em></p>
+<h5 id="internal--external-area-aggregates">Internal / External area aggregates</h5>
+<p>For each Area, you are able to define the <code>external</code> configuration parameter, allowing you to distinguish between internal and external areas (such as <strong>Front Door</strong> or <strong>Backyard</strong>) and <em>Magic Areas</em> will generate aggregate <code>sensor</code> and <code>binary_sensor</code> for each <code>device_class</code> present and aggregate values from all areas together (all internal in one aggregate, all external in another aggregate).</p>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/global_aggr.png" alt="Global aggregate sensors"></p>
+<h5 id="automatic-on-off-switching">Automatic on-off switching</h5>
+<p><img src="/images/posts/bring-home-assistant-area-to-life-with-magic-areas/lights_and_climate.png#floatright" alt="Area&rsquo;s Lights and Climate devices"></p>
+<p>Magic Areas will automatically turn off all <code>light</code>, <code>climate</code> and <code>media_player</code> entities in that area when presence is changed to <code>off</code>. This ensures you&rsquo;ll never let anything running when the room is not being used.</p>
+<p>Climates will be turned <code>on</code> when the area presence state is switched to <code>on</code>. This feature is interesting because you can create <a href="https://www.home-assistant.io/integrations/generic_thermostat/">Generic Thermostats</a> to turn fans on/off based off the temperature of that area, thus relying the automation of turning the actual climate device on/off to the thermostat if the temperature setpoint is met.</p>
+<p>Light orchestration is a little more sophisticated, following the steps of the <a href="https://github.com/claytonjn/hass-circadian_lighting">Circadian Lighting</a> component, light automations follow other constraints:</p>
+<ul>
+<li>If the room is in a <code>sleep</code> state: Defined by <code>sleep_entity</code> and <code>sleep_state</code> parameters</li>
+<li>If the room is in a <code>disable</code> state: Defined by <code>disable_entity</code> and <code>disable_state</code> parameters</li>
+</ul>
+<p>On <code>sleep</code> state, <em>Magic Areas</em> will only turn on the lights defined in <code>sleep_entities</code>. On <code>disable</code> state, <em>Magic Areas</em> won&rsquo;t turn any lights on, but will still turn them off if the area presence state goes to <code>off</code>.</p>
+<p>This design choice makes it a perfect pair for light-controlling components like <a href="https://www.home-assistant.io/integrations/flux/">Flux</a>, <a href="https://github.com/claytonjn/hass-circadian_lighting">Circadian Lighting</a> and <a href="https://github.com/basnijholt/adaptive-lighting">Adaptive Lighting</a>. You&rsquo;ll walk around like a <del>fucking god</del> king and your path will light in front of you.</p>
+<h4 id="installation">Installation</h4>
+<h5 id="manual-installation">Manual Installation</h5>
+<p>You can download the <code>zip</code> file from the <a href="https://github.com/jseidl/hass-magic_areas">GitHub repository</a>, add the <code>custom_components/magic_areas</code> folder into your <code>config/custom_components</code> folder.</p>
+<h5 id="hacs-install">HACS Install</h5>
+<p><em>Magic Areas</em> isn&rsquo;t yet in the main HACS repository but you can add the <a href="https://github.com/jseidl/hass-magic_areas">GitHub repository</a> to HACS as a <em>custom repository</em> by going to HACS &gt; Settings &gt; Custom Repositories and adding the repo&rsquo;s URL.</p>
+<h4 id="configuration">Configuration</h4>
+<p>For a basic setup, just add the following to your <code>configuration.yaml</code> or in a package:</p>
+<pre><code>magic_areas:
+</code></pre><p>You can check out the full configuration parameters with description and defaults at the <a href="https://github.com/jseidl/hass-magic_areas">GitHub repository</a>.</p>
+<h4 id="conclusion">Conclusion</h4>
+<p>This has been a fun journey and it&rsquo;s far from complete. I intend on polishing <em>Magic Areas</em> and adding new features. Make sure to <a href="https://twitter.com/jseidl">follow me on Twitter</a>, star the <a href="https://github.com/jseidl/hass-magic_areas">repository on GitHub</a>, add the repository to <a href="https://hacs.xyz/">HACS</a> and start testing out today!</p>
+<p><strong>REMEMBER:</strong> Magic Areas doesn&rsquo;t do miracles! Its performance is totally dependent on your sensors and their placement, it only automates stuff that you&rsquo;d have to manually create and maintain.</p>
+<p>Let me know what are your thoughts on this component on the comments below. If you have any questions or feature requests, use the <a href="https://github.com/jseidl/hass-magic_areas/issues">GitHub Issues page of the repository</a> to reach out to me.</p>
+        </div>
+      </div>
+      <div class="col-lg-12 mx-auto block shadow mb-5">
+        
+        
+        
+        <h3>You might also be interested in:</h3>
+        <ul>
+          
+          <li><a href="/posts/integrating-your-tesla-with-home-assistant/">Integrating your Tesla with Home Assistant</a></li>
+          
+          <li><a href="/posts/lovelace-residents-card-for-home-assistant/">Create a custom &#39;Residents&#39; card in your Home Assistant&#39;s dashboard</a></li>
+          
+          <li><a href="/posts/battery-level-tricks-with-home-assistant/">Battery level tricks with Home assistant</a></li>
+          
+          <li><a href="/posts/bed-sensor-with-esphome-on-homeassistant/">Making a bed occupancy sensor with bathroom scales, ESP32, HX711 load-cell sensors and ESPHome on Home Assistant</a></li>
+          
+          <li><a href="/posts/multisensors-with-esphome-on-homeassistant/">Building custom multisensors with an ESP8266 and ESPHome on Home Assistant</a></li>
+          
+        </ul>
+        
+      </div>
+      
+      <div class="col-lg-12 mx-auto block shadow">
+        
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "synapse-labs" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://synapselabs.io/" class="d-block pb-3"><img src="/images/logo.png" class="img-fluid" alt="synapse labs 🧠"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/about">About</a></li>
+          
+          <li class="list-inline-item"><a class="text-dark d-block p-2" href="https://synapselabs.io/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://twitter.com/jseidl"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/jseidl"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/janseidl"><i class="ti-linkedin"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>© 2020 <a href="https://synapselabs.io">synapse labs</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://synapselabs.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://synapselabs.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/mark.js"></script>
+
+<script src="https://synapselabs.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://synapselabs.io/js/script.min.js"></script>
+
+
+<!-- google analitycs -->
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-163621923-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+
+</html>

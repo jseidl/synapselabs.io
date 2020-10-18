@@ -6,11 +6,7 @@
     <description>Recent content in Tesla on synapse labs 🧠</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 -0800</lastBuildDate>
-    
-	<atom:link href="https://synapselabs.io/tags/tesla/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 -0800</lastBuildDate><atom:link href="https://synapselabs.io/tags/tesla/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Integrating your Tesla with Home Assistant</title>
       <link>https://synapselabs.io/posts/integrating-your-tesla-with-home-assistant/</link>

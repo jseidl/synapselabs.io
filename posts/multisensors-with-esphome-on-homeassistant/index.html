@@ -9,7 +9,7 @@
     content="Learn how to build custom multisensors with an ESP8266 and ESPHome on Home Assistant">
   
   <meta name="author" content="Jan Seidl">
-  <meta name="generator" content="Hugo 0.65.3" />
+  <meta name="generator" content="Hugo 0.76.4" />
 
   <!-- plugins -->
   
@@ -109,121 +109,121 @@
 <p><em>Note: I will not cover wiring up with the dupont cables as you can check this out on <a href="https://www.youtube.com/watch?v=jpjfVc-9IrQ&amp;t=640s">BRUH Automation&rsquo;s video</a>.</em></p>
 <h3 id="temperature--humidity">Temperature &amp; Humidity</h3>
 <p>I left those at 60 seconds intervals, first because it&rsquo;s a pretty acceptable update range for temperature sensing and second because DHT22s aren&rsquo;t quite fond of being probed all the time. I also needed a <code>lambda</code> filter since the default output is in <em>Celsius</em> and I live in the United States and here we use <em>freedom units</em>, not the <del>peasant</del> <em>metric system</em>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: dht
-  <span style="color:#66d9ef">pin</span>: D6
-  <span style="color:#66d9ef">model</span>: AM2302
-  temperature:
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
-    <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
-    filters:
-      - <span style="color:#66d9ef">lambda</span>: return x * (<span style="color:#ae81ff">9.0</span>/<span style="color:#ae81ff">5.0</span>) + <span style="color:#ae81ff">32.0</span>; 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">dht</span>
+  <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D6</span>
+  <span style="color:#f92672">model</span>: <span style="color:#ae81ff">AM2302</span>
+  <span style="color:#f92672">temperature</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
+    <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
+    <span style="color:#f92672">filters</span>:
+      - <span style="color:#f92672">lambda</span>: <span style="color:#ae81ff">return x * (9.0/5.0) + 32.0; </span>
 </code></pre></div><h3 id="illuminance">Illuminance</h3>
 <p>I check those every 2 seconds and use a <code>sliding_window_moving_average</code> filter to iron out outliers. Without a filter you will see this sensor bounce around. I&rsquo;ve also used the <code>lambda</code> filter according to <a href="https://esphome.io/cookbook/temt6000.html">TEMT600&rsquo;s cookbook on ESPHome website</a> in order to convert the <code>ADC</code> input into illuminance <code>lux</code> values.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: adc
-  <span style="color:#66d9ef">pin</span>: A0
-  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
-  <span style="color:#66d9ef">id</span>: light_sensor
-  <span style="color:#66d9ef">unit_of_measurement</span>: lux
-  <span style="color:#66d9ef">update_interval</span>: 2s
-  filters:
-    - <span style="color:#66d9ef">lambda</span>: return (x * <span style="color:#ae81ff">3.3</span> / <span style="color:#ae81ff">10000.0</span>) * <span style="color:#ae81ff">2000000.0</span>;
-    - sliding_window_moving_average:
-        <span style="color:#66d9ef">window_size</span>: <span style="color:#ae81ff">5</span>
-        <span style="color:#66d9ef">send_every</span>: <span style="color:#ae81ff">5</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">adc</span>
+  <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">A0</span>
+  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
+  <span style="color:#f92672">id</span>: <span style="color:#ae81ff">light_sensor</span>
+  <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#ae81ff">lux</span>
+  <span style="color:#f92672">update_interval</span>: <span style="color:#ae81ff">2s</span>
+  <span style="color:#f92672">filters</span>:
+    - <span style="color:#f92672">lambda</span>: <span style="color:#ae81ff">return (x * 3.3 / 10000.0) * 2000000.0;</span>
+    - <span style="color:#f92672">sliding_window_moving_average</span>:
+        <span style="color:#f92672">window_size</span>: <span style="color:#ae81ff">5</span>
+        <span style="color:#f92672">send_every</span>: <span style="color:#ae81ff">5</span>
 </code></pre></div><h3 id="pir-motion-sensor">PIR Motion sensor</h3>
 <p>This is the most straightforward, just defined as a <code>binary_sensor</code>. Couldn&rsquo;t be more straightforward and so far I didn&rsquo;t felt the need for filtering.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: gpio
-  <span style="color:#66d9ef">pin</span>: D5
-  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
-  <span style="color:#66d9ef">device_class</span>: motion
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">gpio</span>
+  <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D5</span>
+  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
+  <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">motion</span>
 </code></pre></div><h3 id="template-sensor">Template sensor</h3>
 <p>I use a template sensor to flip a <code>binary_sensor</code> called <code>light</code> whenever <em>Illuminance</em> crosses a given threshold (<code>2</code> in my case). This is a useful feature if, for example, you want to only turn the lights on if the room is dark.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#66d9ef">platform</span>: template
-  <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
-  <span style="color:#66d9ef">device_class</span>: light
-  <span style="color:#66d9ef">lambda</span>: |<span style="color:#e6db74">-
-</span><span style="color:#e6db74">    if (id(light_sensor).state &gt; 2) {</span>
-      return <span style="color:#66d9ef">true</span>;
-    } else {
-      return <span style="color:#66d9ef">false</span>;
-    }
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
+  <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">light</span>
+  <span style="color:#f92672">lambda</span>: |-<span style="color:#e6db74">
+</span><span style="color:#e6db74">    if (id(light_sensor).state &gt; 2) {
+</span><span style="color:#e6db74">      return true;
+</span><span style="color:#e6db74">    } else {
+</span><span style="color:#e6db74">      return false;
+</span><span style="color:#e6db74">    }</span>    
 </code></pre></div><h3 id="neopixel-led">Neopixel LED</h3>
 <p>Having a Neopixel LED instead of a plain RGB led saves you some pins on the ESP8266 board and are exposed to Home Assistant as a <code>light</code> which you can control the color and brightness. I use with my automations in order to have a visual aid on the <em>room occupancy status</em> (<code>OFF</code> = <em>clear</em>, <code>blue</code> = <em>occupied</em>).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">light:
-  - <span style="color:#66d9ef">platform</span>: fastled_clockless
-    <span style="color:#66d9ef">chipset</span>: WS2812
-    <span style="color:#66d9ef">pin</span>: D3
-    <span style="color:#66d9ef">num_leds</span>: <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">rgb_order</span>: RGB
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">light</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">fastled_clockless</span>
+    <span style="color:#f92672">chipset</span>: <span style="color:#ae81ff">WS2812</span>
+    <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D3</span>
+    <span style="color:#f92672">num_leds</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#f92672">rgb_order</span>: <span style="color:#ae81ff">RGB</span>
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
 
 </code></pre></div><p>Full code:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">esphome:
-  <span style="color:#66d9ef">name</span>: multisensor
-  <span style="color:#66d9ef">platform</span>: ESP8266
-  <span style="color:#66d9ef">board</span>: nodemcuv2 <span style="color:#75715e"># adjust accordingly for your board</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">esphome</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">multisensor</span>
+  <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">ESP8266</span>
+  <span style="color:#f92672">board</span>: <span style="color:#ae81ff">nodemcuv2</span> <span style="color:#75715e"># adjust accordingly for your board</span>
 
-wifi:
-  <span style="color:#66d9ef">ssid</span>: <span style="color:#e6db74">&#34;Your Wifi SSID&#34;</span>
-  <span style="color:#66d9ef">password</span>: !secret wifi_password
+<span style="color:#f92672">wifi</span>:
+  <span style="color:#f92672">ssid</span>: <span style="color:#e6db74">&#34;Your Wifi SSID&#34;</span>
+  <span style="color:#f92672">password</span>: !<span style="color:#ae81ff">secret wifi_password</span>
   
-<span style="color:#75715e"># Enable logging</span>
-logger:
+<span style="color:#75715e"># Enable logging</span>
+<span style="color:#f92672">logger</span>:
 
-<span style="color:#75715e"># Enable Home Assistant API</span>
-api:
-  <span style="color:#66d9ef">password</span>: !secret api_password
+<span style="color:#75715e"># Enable Home Assistant API</span>
+<span style="color:#f92672">api</span>:
+  <span style="color:#f92672">password</span>: !<span style="color:#ae81ff">secret api_password</span>
 
-ota:
-  <span style="color:#66d9ef">password</span>: !secret ota_password
+<span style="color:#f92672">ota</span>:
+  <span style="color:#f92672">password</span>: !<span style="color:#ae81ff">secret ota_password</span>
 
-<span style="color:#75715e"># Sensors</span>
-sensor:
-  - <span style="color:#66d9ef">platform</span>: dht
-    <span style="color:#66d9ef">pin</span>: D6
-    <span style="color:#66d9ef">model</span>: AM2302
-    temperature:
-      <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
-      <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
-      filters:
-        - <span style="color:#66d9ef">lambda</span>: return x * (<span style="color:#ae81ff">9.0</span>/<span style="color:#ae81ff">5.0</span>) + <span style="color:#ae81ff">32.0</span>; 
-    humidity:
-      <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Humidity (MultiSensor)&#34;</span>
-    <span style="color:#66d9ef">update_interval</span>: 60s
-  - <span style="color:#66d9ef">platform</span>: adc
-    <span style="color:#66d9ef">pin</span>: A0
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
-    <span style="color:#66d9ef">id</span>: light_sensor
-    <span style="color:#66d9ef">unit_of_measurement</span>: lux
-    <span style="color:#66d9ef">update_interval</span>: 2s
-    filters:
-      - <span style="color:#66d9ef">lambda</span>: return (x * <span style="color:#ae81ff">3.3</span> / <span style="color:#ae81ff">10000.0</span>) * <span style="color:#ae81ff">2000000.0</span>;
-      - sliding_window_moving_average:
-          <span style="color:#66d9ef">window_size</span>: <span style="color:#ae81ff">5</span>
-          <span style="color:#66d9ef">send_every</span>: <span style="color:#ae81ff">5</span>
+<span style="color:#75715e"># Sensors</span>
+<span style="color:#f92672">sensor</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">dht</span>
+    <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D6</span>
+    <span style="color:#f92672">model</span>: <span style="color:#ae81ff">AM2302</span>
+    <span style="color:#f92672">temperature</span>:
+      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Temperature (MultiSensor)&#34;</span>
+      <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#34;°F&#34;</span>
+      <span style="color:#f92672">filters</span>:
+        - <span style="color:#f92672">lambda</span>: <span style="color:#ae81ff">return x * (9.0/5.0) + 32.0; </span>
+    <span style="color:#f92672">humidity</span>:
+      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Humidity (MultiSensor)&#34;</span>
+    <span style="color:#f92672">update_interval</span>: <span style="color:#ae81ff">60s</span>
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">adc</span>
+    <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">A0</span>
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Illuminance (MultiSensor)&#34;</span>
+    <span style="color:#f92672">id</span>: <span style="color:#ae81ff">light_sensor</span>
+    <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#ae81ff">lux</span>
+    <span style="color:#f92672">update_interval</span>: <span style="color:#ae81ff">2s</span>
+    <span style="color:#f92672">filters</span>:
+      - <span style="color:#f92672">lambda</span>: <span style="color:#ae81ff">return (x * 3.3 / 10000.0) * 2000000.0;</span>
+      - <span style="color:#f92672">sliding_window_moving_average</span>:
+          <span style="color:#f92672">window_size</span>: <span style="color:#ae81ff">5</span>
+          <span style="color:#f92672">send_every</span>: <span style="color:#ae81ff">5</span>
     
-binary_sensor:
-  - <span style="color:#66d9ef">platform</span>: gpio
-    <span style="color:#66d9ef">pin</span>: D5
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
-    <span style="color:#66d9ef">device_class</span>: motion
-  - <span style="color:#66d9ef">platform</span>: template
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
-    <span style="color:#66d9ef">device_class</span>: light
-    <span style="color:#66d9ef">lambda</span>: |<span style="color:#e6db74">-
-</span><span style="color:#e6db74">      if (id(light_sensor).state &gt; 2) {</span>
-        return <span style="color:#66d9ef">true</span>;
-      } else {
-        return <span style="color:#66d9ef">false</span>;
-      }
+<span style="color:#f92672">binary_sensor</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">gpio</span>
+    <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D5</span>
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Motion (MultiSensor)&#34;</span>
+    <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">motion</span>
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Light (MultiSensor)&#34;</span>
+    <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">light</span>
+    <span style="color:#f92672">lambda</span>: |-<span style="color:#e6db74">
+</span><span style="color:#e6db74">      if (id(light_sensor).state &gt; 2) {
+</span><span style="color:#e6db74">        return true;
+</span><span style="color:#e6db74">      } else {
+</span><span style="color:#e6db74">        return false;
+</span><span style="color:#e6db74">      }</span>      
 
-light:
-  - <span style="color:#66d9ef">platform</span>: fastled_clockless
-    <span style="color:#66d9ef">chipset</span>: WS2812
-    <span style="color:#66d9ef">pin</span>: D3
-    <span style="color:#66d9ef">num_leds</span>: <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">rgb_order</span>: RGB
-    <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
+<span style="color:#f92672">light</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">fastled_clockless</span>
+    <span style="color:#f92672">chipset</span>: <span style="color:#ae81ff">WS2812</span>
+    <span style="color:#f92672">pin</span>: <span style="color:#ae81ff">D3</span>
+    <span style="color:#f92672">num_leds</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#f92672">rgb_order</span>: <span style="color:#ae81ff">RGB</span>
+    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;LED (MultiSensor)&#34;</span>
 </code></pre></div>
         </div>
       </div>

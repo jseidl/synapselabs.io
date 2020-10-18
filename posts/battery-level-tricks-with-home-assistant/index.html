@@ -9,7 +9,7 @@
     content="Get the most out of your sensors&#39; battery level information">
   
   <meta name="author" content="Jan Seidl">
-  <meta name="generator" content="Hugo 0.65.3" />
+  <meta name="generator" content="Hugo 0.76.4" />
 
   <!-- plugins -->
   
@@ -104,156 +104,156 @@
 <p>I have a bunch of wireless Zigbee and Z-Wave sensors integrated with Home Assistant. Even thou they&rsquo;re very efficient by using deep sleep, I still have to change their battery from time to time and I&rsquo;d rather be notified that I need to do so than one day realize something is not working because that sensor&rsquo;s battery is dead.</p>
 <p>I&rsquo;m pretty familiar with <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a> (Home Assistant&rsquo;s Templating language) from years of developing <a href="https://flask.palletsprojects.com/en/1.1.x/">Flask apps</a> so I decided to give a try on creating this sensor with Home Assistant&rsquo;s <a href="https://www.home-assistant.io/integrations/template/"><code>Template</code> sensor</a> with filters to beautifully achieve its goal.</p>
 <p>I ended up using a <code>Template sensor</code> to get the lowest battery level across all sensors, then a <code>Template binary_sensor</code> with a <code>problem</code> <code>device_class</code> to indicate wether a sensor has low battery (if the lowest battery level is below a certain threshold) and a <code>alert</code> to keep notifying me in a given interval until I charge or replace the battery. I also used a list to keep the sensors I want to ignore like our phone&rsquo;s battery.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">sensor:
-  - <span style="color:#66d9ef">platform</span>: template
-    sensors:
-        sensors_lowest_battery_level:
-          <span style="color:#66d9ef">friendly_name</span>: <span style="color:#e6db74">&#39;Lowest battery level (Sensors)&#39;</span>
-          <span style="color:#66d9ef">entity_id</span>: sun.sun
-          <span style="color:#66d9ef">device_class</span>: battery
-          <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
-          <span style="color:#66d9ef">value_template</span>: <span style="color:#e6db74">&gt;
-</span><span style="color:#e6db74">                {% set domains = [&#39;sensor&#39;, &#39;zwave&#39;] %}</span>
-                {% set ns = namespace(min_batt=<span style="color:#ae81ff">100</span>, entities=[]) %}
-                {%- set exclude_sensors = [<span style="color:#e6db74">&#39;sensor.sensors_lowest_battery_level&#39;</span>,<span style="color:#e6db74">&#39;sensor.wife_phone_batt&#39;</span>,<span style="color:#e6db74">&#39;sensor.jseidl_phone_batt&#39;</span>] -%}
-                {% for domain in domains %}
-                  {% set ns.entities = states[domain] %}
-                  {% for sensor in exclude_sensors %}
-                    {% set ns.entities = ns.entities | rejectattr(<span style="color:#e6db74">&#39;entity_id&#39;</span>, <span style="color:#e6db74">&#39;equalto&#39;</span>, sensor) %}
-                  {% endfor %}
-                  {% set batt_sensors = ns.entities | selectattr(<span style="color:#e6db74">&#39;attributes.device_class&#39;</span>,<span style="color:#e6db74">&#39;equalto&#39;</span>,<span style="color:#e6db74">&#39;battery&#39;</span>) | map(attribute=<span style="color:#e6db74">&#39;state&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#e6db74">&#39;unknown&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#e6db74">&#39;None&#39;</span>) | map(<span style="color:#e6db74">&#39;int&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#ae81ff">0</span>) | list %}
-                  {% set batt_attrs = ns.entities | selectattr(<span style="color:#e6db74">&#39;attributes.battery_level&#39;</span>,<span style="color:#e6db74">&#39;defined&#39;</span>) | map(attribute=<span style="color:#e6db74">&#39;attributes.battery_level&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#e6db74">&#39;unknown&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#e6db74">&#39;None&#39;</span>) | map(<span style="color:#e6db74">&#39;int&#39;</span>) | reject(<span style="color:#e6db74">&#39;equalto&#39;</span>, <span style="color:#ae81ff">0</span>) | list %}
-                  {% set batt_lvls = batt_sensors + batt_attrs %}
-                  {% if batt_lvls|length &gt; <span style="color:#ae81ff">0</span> %}
-                    {% set _min = batt_lvls|min %}
-                    {% if _min &lt; ns.min_batt %}
-                      {% set ns.min_batt = _min %}
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-                {{ ns.min_batt }}
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sensor</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+    <span style="color:#f92672">sensors</span>:
+        <span style="color:#f92672">sensors_lowest_battery_level</span>:
+          <span style="color:#f92672">friendly_name</span>: <span style="color:#e6db74">&#39;Lowest battery level (Sensors)&#39;</span>
+          <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">sun.sun</span>
+          <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">battery</span>
+          <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
+          <span style="color:#f92672">value_template</span>: &gt;<span style="color:#e6db74">
+</span><span style="color:#e6db74">                {% set domains = [&#39;sensor&#39;, &#39;zwave&#39;] %}
+</span><span style="color:#e6db74">                {% set ns = namespace(min_batt=100, entities=[]) %}
+</span><span style="color:#e6db74">                {%- set exclude_sensors = [&#39;sensor.sensors_lowest_battery_level&#39;,&#39;sensor.wife_phone_batt&#39;,&#39;sensor.jseidl_phone_batt&#39;] -%}
+</span><span style="color:#e6db74">                {% for domain in domains %}
+</span><span style="color:#e6db74">                  {% set ns.entities = states[domain] %}
+</span><span style="color:#e6db74">                  {% for sensor in exclude_sensors %}
+</span><span style="color:#e6db74">                    {% set ns.entities = ns.entities | rejectattr(&#39;entity_id&#39;, &#39;equalto&#39;, sensor) %}
+</span><span style="color:#e6db74">                  {% endfor %}
+</span><span style="color:#e6db74">                  {% set batt_sensors = ns.entities | selectattr(&#39;attributes.device_class&#39;,&#39;equalto&#39;,&#39;battery&#39;) | map(attribute=&#39;state&#39;) | reject(&#39;equalto&#39;, &#39;unknown&#39;) | reject(&#39;equalto&#39;, &#39;None&#39;) | map(&#39;int&#39;) | reject(&#39;equalto&#39;, 0) | list %}
+</span><span style="color:#e6db74">                  {% set batt_attrs = ns.entities | selectattr(&#39;attributes.battery_level&#39;,&#39;defined&#39;) | map(attribute=&#39;attributes.battery_level&#39;) | reject(&#39;equalto&#39;, &#39;unknown&#39;) | reject(&#39;equalto&#39;, &#39;None&#39;) | map(&#39;int&#39;) | reject(&#39;equalto&#39;, 0) | list %}
+</span><span style="color:#e6db74">                  {% set batt_lvls = batt_sensors + batt_attrs %}
+</span><span style="color:#e6db74">                  {% if batt_lvls|length &gt; 0 %}
+</span><span style="color:#e6db74">                    {% set _min = batt_lvls|min %}
+</span><span style="color:#e6db74">                    {% if _min &lt; ns.min_batt %}
+</span><span style="color:#e6db74">                      {% set ns.min_batt = _min %}
+</span><span style="color:#e6db74">                    {% endif %}
+</span><span style="color:#e6db74">                  {% endif %}
+</span><span style="color:#e6db74">                {% endfor %}
+</span><span style="color:#e6db74">                {{ ns.min_batt }}</span>                
 
-binary_sensor:
-  - <span style="color:#66d9ef">platform</span>: template
-    sensors:
-      sensor_low_battery:
-        <span style="color:#66d9ef">value_template</span>: <span style="color:#e6db74">&#34;{{ states(&#39;sensor.sensors_lowest_battery_level&#39;)|int &lt;= 40 }}&#34;</span>
-        <span style="color:#66d9ef">friendly_name</span>: <span style="color:#e6db74">&#39;A sensor has low battery&#39;</span>
-        <span style="color:#66d9ef">device_class</span>: problem
+<span style="color:#f92672">binary_sensor</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+    <span style="color:#f92672">sensors</span>:
+      <span style="color:#f92672">sensor_low_battery</span>:
+        <span style="color:#f92672">value_template</span>: <span style="color:#e6db74">&#34;{{ states(&#39;sensor.sensors_lowest_battery_level&#39;)|int &lt;= 40 }}&#34;</span>
+        <span style="color:#f92672">friendly_name</span>: <span style="color:#e6db74">&#39;A sensor has low battery&#39;</span>
+        <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">problem</span>
 
-alert:
-  sensor_low_battery:
-    <span style="color:#66d9ef">name</span>: Sensor has low battery!
-    <span style="color:#66d9ef">message</span>: <span style="color:#e6db74">&gt;
-</span><span style="color:#e6db74">      {%- set domains = [&#39;sensor&#39;, &#39;zwave&#39;] -%}</span>
-      {%- set threshold = <span style="color:#ae81ff">40</span> -%}
-      {%- set exclude_entities = [<span style="color:#e6db74">&#39;sensor.sensors_lowest_battery_level&#39;</span>,<span style="color:#e6db74">&#39;sensor.wife_phone_batt&#39;</span>,<span style="color:#e6db74">&#39;sensor.jseidl_phone_batt&#39;</span>] -%}
-      Sensors are below <span style="color:#ae81ff">40</span>% battery:
-      {%- for domain in domains -%}
-        {%- for item in states[domain] -%}
-          {%- if item.entity_id not in exclude_entities -%}
-            {%- if item.attributes.battery_level is defined -%}
-              {%- set level = item.attributes.battery_level|int -%}
-              {% if level &gt; <span style="color:#ae81ff">0</span> and level &lt; threshold %}
-      - {{ item.attributes.friendly_name }} ({{ item.attributes[<span style="color:#e6db74">&#39;battery_level&#39;</span>]|int}}%)
-              {%- endif -%}
-            {%- endif -%}
-            {%- if item.attributes.device_class is defined and item.attributes.device_class == <span style="color:#e6db74">&#39;battery&#39;</span> -%}
-              {%- set level = item.state|int -%}
-              {% if level &gt; <span style="color:#ae81ff">0</span> and level &lt;= threshold %}
-      - {{ item.attributes.friendly_name }} ({{ item.state|int }}%)
-              {%- endif -%}
-            {%- endif %}
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endfor -%}
-    <span style="color:#66d9ef">entity_id</span>: binary_sensor.sensor_low_battery
-    <span style="color:#66d9ef">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
-    <span style="color:#66d9ef">repeat</span>: 
+<span style="color:#f92672">alert</span>:
+  <span style="color:#f92672">sensor_low_battery</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Sensor has low battery!</span>
+    <span style="color:#f92672">message</span>: &gt;<span style="color:#e6db74">
+</span><span style="color:#e6db74">      {%- set domains = [&#39;sensor&#39;, &#39;zwave&#39;] -%}
+</span><span style="color:#e6db74">      {%- set threshold = 40 -%}
+</span><span style="color:#e6db74">      {%- set exclude_entities = [&#39;sensor.sensors_lowest_battery_level&#39;,&#39;sensor.wife_phone_batt&#39;,&#39;sensor.jseidl_phone_batt&#39;] -%}
+</span><span style="color:#e6db74">      Sensors are below 40% battery:
+</span><span style="color:#e6db74">      {%- for domain in domains -%}
+</span><span style="color:#e6db74">        {%- for item in states[domain] -%}
+</span><span style="color:#e6db74">          {%- if item.entity_id not in exclude_entities -%}
+</span><span style="color:#e6db74">            {%- if item.attributes.battery_level is defined -%}
+</span><span style="color:#e6db74">              {%- set level = item.attributes.battery_level|int -%}
+</span><span style="color:#e6db74">              {% if level &gt; 0 and level &lt; threshold %}
+</span><span style="color:#e6db74">      - {{ item.attributes.friendly_name }} ({{ item.attributes[&#39;battery_level&#39;]|int}}%)
+</span><span style="color:#e6db74">              {%- endif -%}
+</span><span style="color:#e6db74">            {%- endif -%}
+</span><span style="color:#e6db74">            {%- if item.attributes.device_class is defined and item.attributes.device_class == &#39;battery&#39; -%}
+</span><span style="color:#e6db74">              {%- set level = item.state|int -%}
+</span><span style="color:#e6db74">              {% if level &gt; 0 and level &lt;= threshold %}
+</span><span style="color:#e6db74">      - {{ item.attributes.friendly_name }} ({{ item.state|int }}%)
+</span><span style="color:#e6db74">              {%- endif -%}
+</span><span style="color:#e6db74">            {%- endif %}
+</span><span style="color:#e6db74">          {%- endif -%}
+</span><span style="color:#e6db74">        {%- endfor -%}
+</span><span style="color:#e6db74">      {%- endfor -%}</span>      
+    <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">binary_sensor.sensor_low_battery</span>
+    <span style="color:#f92672">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
+    <span style="color:#f92672">repeat</span>: 
       - <span style="color:#ae81ff">5</span>
       - <span style="color:#ae81ff">60</span>
       - <span style="color:#ae81ff">360</span>
-    <span style="color:#66d9ef">skip_first</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">can_acknowledge</span>: <span style="color:#66d9ef">true</span>
-    notifiers:
-      - jseidl_telegram
+    <span style="color:#f92672">skip_first</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">can_acknowledge</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">notifiers</span>:
+      - <span style="color:#ae81ff">jseidl_telegram</span>
 </code></pre></div><h3 id="grouping-multiple-battery-sensors-for-the-same-device">Grouping multiple battery sensors for the same device</h3>
 <p>At our home we use both <a href="https://www.home-assistant.io/integrations/owntracks/">OwnTracks</a> and the <a href="https://play.google.com/store/apps/details?id=io.homeassistant.companion.android&amp;hl=en_US">Home Assistant app for Android</a> that report <code>battery_level</code>. This is one easy trick that I also use for my multisensors to get a room average of temperature, luminosity, humidity etc by averaging all sensors in that room. For that we&rsquo;ll use the <a href="https://www.home-assistant.io/integrations/min_max/"><code>Min/Max</code> sensor</a> and <a href="https://www.home-assistant.io/integrations/template/"><code>Template</code> sensor</a>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">sensor:
-  - <span style="color:#66d9ef">platform</span>: template
-    sensors:
-      jseidl_phone_batt_owntracks:
-        <span style="color:#66d9ef">friendly_name</span>: <span style="color:#e6db74">&#34;Battery Level (Jan&#39;s Phone - Owntracks)&#34;</span>
-        <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
-        <span style="color:#66d9ef">device_class</span>: battery
-        <span style="color:#66d9ef">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_phone&#39;, &#39;battery_level&#39;) }}&#34;</span>
-      jseidl_phone_batt_ha_app:
-        <span style="color:#66d9ef">friendly_name</span>: <span style="color:#e6db74">&#34;Battery Level (Jan&#39;s Phone - HA App)&#34;</span>
-        <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
-        <span style="color:#66d9ef">device_class</span>: battery
-        <span style="color:#66d9ef">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_oneplus&#39;, &#39;battery_level&#39;) }}&#34;</span>
-  - <span style="color:#66d9ef">platform</span>: min_max
-    <span style="color:#66d9ef">type</span>: mean
-    entity_ids:
-      - sensor.jseidl_phone_batt_owntracks
-      - sensor.jseidl_phone_batt_ha_app
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sensor</span>:
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+    <span style="color:#f92672">sensors</span>:
+      <span style="color:#f92672">jseidl_phone_batt_owntracks</span>:
+        <span style="color:#f92672">friendly_name</span>: <span style="color:#e6db74">&#34;Battery Level (Jan&#39;s Phone - Owntracks)&#34;</span>
+        <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
+        <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">battery</span>
+        <span style="color:#f92672">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_phone&#39;, &#39;battery_level&#39;) }}&#34;</span>
+      <span style="color:#f92672">jseidl_phone_batt_ha_app</span>:
+        <span style="color:#f92672">friendly_name</span>: <span style="color:#e6db74">&#34;Battery Level (Jan&#39;s Phone - HA App)&#34;</span>
+        <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
+        <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">battery</span>
+        <span style="color:#f92672">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_oneplus&#39;, &#39;battery_level&#39;) }}&#34;</span>
+  - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">min_max</span>
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">mean</span>
+    <span style="color:#f92672">entity_ids</span>:
+      - <span style="color:#ae81ff">sensor.jseidl_phone_batt_owntracks</span>
+      - <span style="color:#ae81ff">sensor.jseidl_phone_batt_ha_app</span>
 </code></pre></div><h3 id="getting-your-phones-charging-state-by-monitoring-the-battery-level">Getting your phone&rsquo;s charging state by monitoring the battery level</h3>
 <p>Both <code>device_tracker</code> entities for our phones report only the <code>battery_level</code> but not the charging state. In order to get that information without any additional software running on the phones, I&rsquo;ve decided to use the <a href="https://www.home-assistant.io/integrations/trend/"><code>Trend sensor</code></a> to decided if the phone is charging or discharging by observing the <code>battery_level</code> change across time.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    - <span style="color:#66d9ef">platform</span>: trend
-      sensors:
-        jseidl_phone_charging:
-            <span style="color:#66d9ef">entity_id</span>: sensor.jseidl_phone_batt
-            <span style="color:#66d9ef">device_class</span>: plug
-        jseidl_phone_discharging:
-            <span style="color:#66d9ef">entity_id</span>: sensor.jseidl_phone_batt
-            <span style="color:#66d9ef">invert</span>: <span style="color:#66d9ef">true</span>
-            <span style="color:#66d9ef">device_class</span>: battery
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">trend</span>
+      <span style="color:#f92672">sensors</span>:
+        <span style="color:#f92672">jseidl_phone_charging</span>:
+            <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">sensor.jseidl_phone_batt</span>
+            <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">plug</span>
+        <span style="color:#f92672">jseidl_phone_discharging</span>:
+            <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">sensor.jseidl_phone_batt</span>
+            <span style="color:#f92672">invert</span>: <span style="color:#66d9ef">true</span>
+            <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">battery</span>
 </code></pre></div><h3 id="reminder-for-charging-your-phone">Reminder for charging your phone</h3>
 <p>Something that used to happen a lot with both my wife and I was waking up in the morning and realize you have 15% battery because we forgot to connect our phone to the charger.</p>
 <p>By using the <code>trend</code> sensor trick from above plus <a href="/posts/bed-sensor-with-esphome-on-homeassistant">my custom Bed sensor with ESPHome</a>, we can cook up a quick automation to warn us with we ever commit that sin again. <em>Note that I&rsquo;m using my <code>discharging</code> sensor rather than the <code>charging</code> one because once the battery gets to 100% it will not be considered <code>charging</code> anymore.</em></p>
 <p>Here I&rsquo;m using <a href="https://www.home-assistant.io/integrations/google_assistant/">Google Assistant</a> to announce it but you could use <a href="https://github.com/custom-components/alexa_media_player">Alexa</a>, send a <a href="https://www.home-assistant.io/integrations/telegram/">Telegram</a> message or just blink the lights.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">automation:
- - <span style="color:#66d9ef">alias</span>: <span style="color:#e6db74">&#39;Alert if in bed and phone not charging (Jan Side)&#39;</span>
-    trigger:
-      - <span style="color:#66d9ef">platform</span>: state
-        <span style="color:#66d9ef">entity_id</span>: binary_sensor.bed_occupancy_right
-        <span style="color:#66d9ef">to</span>: <span style="color:#e6db74">&#39;on&#39;</span>
-        for:
-          <span style="color:#66d9ef">minutes</span>: <span style="color:#ae81ff">15</span>
-    condition:
-      - <span style="color:#66d9ef">condition</span>: state
-        <span style="color:#66d9ef">entity_id</span>: input_boolean.bed_actions
-        <span style="color:#66d9ef">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
-      - <span style="color:#66d9ef">condition</span>: state
-        <span style="color:#66d9ef">entity_id</span>: binary_sensor.light_exterior
-        <span style="color:#66d9ef">state</span>: <span style="color:#e6db74">&#39;off&#39;</span>
-      - <span style="color:#66d9ef">condition</span>: state
-        <span style="color:#66d9ef">entity_id</span>: input_boolean.voice_notifications
-        <span style="color:#66d9ef">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
-      - <span style="color:#66d9ef">condition</span>: state
-        <span style="color:#66d9ef">entity_id</span>: binary_sensor.lfuentes_phone_discharging
-        <span style="color:#66d9ef">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
-    action:
-      - <span style="color:#66d9ef">service</span>: tts.google_translate_say
-        <span style="color:#66d9ef">entity_id</span>: media_player.bedroom_speaker
-        data:
-          <span style="color:#66d9ef">message</span>: Don&#39;t forget to connect your phone to the charger, Jan!
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">automation</span>:
+ - <span style="color:#f92672">alias</span>: <span style="color:#e6db74">&#39;Alert if in bed and phone not charging (Jan Side)&#39;</span>
+    <span style="color:#f92672">trigger</span>:
+      - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">state</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">binary_sensor.bed_occupancy_right</span>
+        <span style="color:#f92672">to</span>: <span style="color:#e6db74">&#39;on&#39;</span>
+        <span style="color:#f92672">for</span>:
+          <span style="color:#f92672">minutes</span>: <span style="color:#ae81ff">15</span>
+    <span style="color:#f92672">condition</span>:
+      - <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">state</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">input_boolean.bed_actions</span>
+        <span style="color:#f92672">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
+      - <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">state</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">binary_sensor.light_exterior</span>
+        <span style="color:#f92672">state</span>: <span style="color:#e6db74">&#39;off&#39;</span>
+      - <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">state</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">input_boolean.voice_notifications</span>
+        <span style="color:#f92672">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
+      - <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">state</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">binary_sensor.lfuentes_phone_discharging</span>
+        <span style="color:#f92672">state</span>: <span style="color:#e6db74">&#39;on&#39;</span>
+    <span style="color:#f92672">action</span>:
+      - <span style="color:#f92672">service</span>: <span style="color:#ae81ff">tts.google_translate_say</span>
+        <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">media_player.bedroom_speaker</span>
+        <span style="color:#f92672">data</span>:
+          <span style="color:#f92672">message</span>: <span style="color:#ae81ff">Don&#39;t forget to connect your phone to the charger, Jan!</span>
 </code></pre></div><p>The <code>for</code> 15 minutes statement is to give the <code>trend</code> sensor time to observe the changing data and set up correctly.</p>
 <h3 id="tweaking-the-battery-icon-with-charging-states">Tweaking the battery icon with charging states</h3>
 <p>I wanted to use the charging states acquired from the trick above in my &ldquo;residents&rdquo; block on Lovelace UI. At first I had just added a charging state icon to the side of the main phone battery icon but that just didn&rsquo;t looked good at all.</p>
-<p>I had created <code>Template sensors</code> to extract the <code>battery_level</code> attribute from my phone&rsquo;s <code>device_tracker</code> entity from OwnTracks. It was easy to merge the charging state into a <code>icon_template</code> in that sensor&rsquo;s definition thanks to Material Design Icons&rsquo; naming convention (<code>battery-90</code>, <code>battery-charing-90</code> etc).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">sensor:
-    - <span style="color:#66d9ef">platform</span>: template
-      sensors:
-        jseidl_phone_batt:
-            <span style="color:#66d9ef">friendly_name</span>: Phone Battery (Jan)
-            <span style="color:#66d9ef">device_class</span>: Battery
-            <span style="color:#66d9ef">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
-            <span style="color:#66d9ef">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_presence&#39;, &#39;battery_level&#39;) }}&#34;</span>
-            <span style="color:#66d9ef">icon_template</span>: &gt;<span style="color:#e6db74">-
-</span><span style="color:#e6db74">                {% set tenths = state_attr(&#39;device_tracker.jseidl_presence&#39;, &#39;battery_level&#39;) / 10 %}</span>
-                {% set numeral = <span style="color:#ae81ff">10</span> * tenths|int %}
-                mdi:battery{% if is_state(<span style="color:#e6db74">&#39;binary_sensor.jseidl_phone_charging&#39;</span>, <span style="color:#e6db74">&#39;on&#39;</span>) %}-charging{% endif %}{% if <span style="color:#ae81ff">10</span> &lt;= numeral &lt; <span style="color:#ae81ff">100</span> %}-{{ numeral }}{% elif numeral &lt; <span style="color:#ae81ff">10</span> %}-outline{% endif %}
+<p>I had created <code>Template sensors</code> to extract the <code>battery_level</code> attribute from my phone&rsquo;s <code>device_tracker</code> entity from OwnTracks. It was easy to merge the charging state into a <code>icon_template</code> in that sensor&rsquo;s definition thanks to Material Design Icons' naming convention (<code>battery-90</code>, <code>battery-charing-90</code> etc).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sensor</span>:
+    - <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">template</span>
+      <span style="color:#f92672">sensors</span>:
+        <span style="color:#f92672">jseidl_phone_batt</span>:
+            <span style="color:#f92672">friendly_name</span>: <span style="color:#ae81ff">Phone Battery (Jan)</span>
+            <span style="color:#f92672">device_class</span>: <span style="color:#ae81ff">Battery</span>
+            <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#e6db74">&#39;%&#39;</span>
+            <span style="color:#f92672">value_template</span>: <span style="color:#e6db74">&#34;{{ state_attr(&#39;device_tracker.jseidl_presence&#39;, &#39;battery_level&#39;) }}&#34;</span>
+            <span style="color:#f92672">icon_template</span>: &gt;-<span style="color:#e6db74">
+</span><span style="color:#e6db74">                {% set tenths = state_attr(&#39;device_tracker.jseidl_presence&#39;, &#39;battery_level&#39;) / 10 %}
+</span><span style="color:#e6db74">                {% set numeral = 10 * tenths|int %}
+</span><span style="color:#e6db74">                mdi:battery{% if is_state(&#39;binary_sensor.jseidl_phone_charging&#39;, &#39;on&#39;) %}-charging{% endif %}{% if 10 &lt;= numeral &lt; 100 %}-{{ numeral }}{% elif numeral &lt; 10 %}-outline{% endif %}</span>                
 </code></pre></div><p>Now the battery level icon will change between its regular or <code>charging</code> variant according to the phone&rsquo;s charging state! Note that <em>charging state</em> is not the same as <em>plugged in</em>. We infer charging state by how the <code>battery_level</code> changes (increases or reduces) thus when the battery gets to 100% it will not show as charging even thou its plugged in.</p>
 <p><img src="/images/posts/battery-level-tricks-with-home-assistant/residents-box.png" alt="Residents quick info box"></p>
 <p>And that concludes all the tricks I know so far for <code>battery_level</code>. <code>Template sensors</code> are a VERY powerful tool. I use it a lot for solving various needs. What are your creative solutions with template sensors? Leave it down in the comments!</p>

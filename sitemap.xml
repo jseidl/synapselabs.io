@@ -3,18 +3,48 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://synapselabs.io/tags/automation/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://synapselabs.io/categories/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/custom-component/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
   </url>
   
   <url>
     <loc>https://synapselabs.io/tags/home-assistant/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
   </url>
   
   <url>
     <loc>https://synapselabs.io/categories/home-automation/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/posts/bring-home-assistant-area-to-life-with-magic-areas/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/posts/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://synapselabs.io/tags/</loc>
+    <lastmod>2020-10-13T09:00:00-08:00</lastmod>
   </url>
   
   <url>
@@ -24,21 +54,6 @@
   
   <url>
     <loc>https://synapselabs.io/tags/lovelace/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/posts/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/</loc>
-    <lastmod>2020-06-29T00:00:00-08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://synapselabs.io/tags/</loc>
     <lastmod>2020-06-29T00:00:00-08:00</lastmod>
   </url>
   

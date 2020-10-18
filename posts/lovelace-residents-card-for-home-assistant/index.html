@@ -9,7 +9,7 @@
     content="Display information about your residents on Home Assistant">
   
   <meta name="author" content="Jan Seidl">
-  <meta name="generator" content="Hugo 0.65.3" />
+  <meta name="generator" content="Hugo 0.76.4" />
 
   <!-- plugins -->
   
@@ -99,37 +99,37 @@
 <p>If you don&rsquo;t have your <code>person</code> entries yet, let&rsquo;s start with the basic. I usually have a <code>person</code> folder under <code>packages</code>. If you&rsquo;re not using <a href="https://www.home-assistant.io/docs/configuration/packages/"><code>packages</code></a> and still have all your configuration under <code>configuration.yaml</code> with over 600 lines <del>like a savage literally from before fire was discovered</del>, stop what you&rsquo;re doing right now and go convert into the <code>packages</code> model.</p>
 <p>Or&hellip; well&hellip;. you can wait until I write about it too. <del>Shame is already there patting you in the back anyway.</del></p>
 <p>I create one file per resident where I define the <code>customize</code> entry (resident picture), the <code>person</code> entity with only one <code>device_tracker</code> entry, because I use the <a href="https://github.com/helto4real/hassio-add-ons/tree/master/presence">Better Presence add-on</a> (we&rsquo;ll see more about presence detection and this add-on in a future post).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># jseidl.yaml</span>
-homeassistant:
-  customize:
-    person.jan:
-      <span style="color:#66d9ef">entity_picture</span>: <span style="color:#e6db74">&#34;/local/images/residents/jseidl.jpg&#34;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># jseidl.yaml</span>
+<span style="color:#f92672">homeassistant</span>:
+  <span style="color:#f92672">customize</span>:
+    <span style="color:#f92672">person.jan</span>:
+      <span style="color:#f92672">entity_picture</span>: <span style="color:#e6db74">&#34;/local/images/residents/jseidl.jpg&#34;</span>
 
-person:
-  - <span style="color:#66d9ef">name</span>: Jan
-    <span style="color:#66d9ef">id</span>: jseidl
-    <span style="color:#66d9ef">user_id</span>: !secret person_jseidl_userid
-    device_trackers:
-      - device_tracker.jseidl_presence
+<span style="color:#f92672">person</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Jan</span>
+    <span style="color:#f92672">id</span>: <span style="color:#ae81ff">jseidl</span>
+    <span style="color:#f92672">user_id</span>: !<span style="color:#ae81ff">secret person_jseidl_userid</span>
+    <span style="color:#f92672">device_trackers</span>:
+      - <span style="color:#ae81ff">device_tracker.jseidl_presence</span>
 </code></pre></div><h3 id="creating-proximity-sensors">Creating proximity sensors</h3>
 <p>Upon randomly reading Home Assistant&rsquo;s components documentation, I&rsquo;ve stumbled uponn the <code>proximity</code> sensor and decided it would be a cool addition to my residents information. For that to work, you&rsquo;ll need <code>device_tracker</code> entries with GPS info, so I add our phones (OwnTracks) <code>device_tracker</code> entity exclusively since my aggregate one not always have GPS info on it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">proximity:
-  home_jseidl:
-    devices:
-      - device_tracker.jseidl_phone
-    <span style="color:#66d9ef">tolerance</span>: <span style="color:#ae81ff">50</span>
-    <span style="color:#66d9ef">unit_of_measurement</span>: mi
-  home_wife:
-    devices:
-      - device_tracker.wife_phone
-    <span style="color:#66d9ef">tolerance</span>: <span style="color:#ae81ff">50</span>
-    <span style="color:#66d9ef">unit_of_measurement</span>: mi
-  home_residents:
-    devices:
-      - device_tracker.wife_phone
-      - device_tracker.jseidl_phone
-    <span style="color:#66d9ef">tolerance</span>: <span style="color:#ae81ff">50</span>
-    <span style="color:#66d9ef">unit_of_measurement</span>: mi
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">proximity</span>:
+  <span style="color:#f92672">home_jseidl</span>:
+    <span style="color:#f92672">devices</span>:
+      - <span style="color:#ae81ff">device_tracker.jseidl_phone</span>
+    <span style="color:#f92672">tolerance</span>: <span style="color:#ae81ff">50</span>
+    <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#ae81ff">mi</span>
+  <span style="color:#f92672">home_wife</span>:
+    <span style="color:#f92672">devices</span>:
+      - <span style="color:#ae81ff">device_tracker.wife_phone</span>
+    <span style="color:#f92672">tolerance</span>: <span style="color:#ae81ff">50</span>
+    <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#ae81ff">mi</span>
+  <span style="color:#f92672">home_residents</span>:
+    <span style="color:#f92672">devices</span>:
+      - <span style="color:#ae81ff">device_tracker.wife_phone</span>
+      - <span style="color:#ae81ff">device_tracker.jseidl_phone</span>
+    <span style="color:#f92672">tolerance</span>: <span style="color:#ae81ff">50</span>
+    <span style="color:#f92672">unit_of_measurement</span>: <span style="color:#ae81ff">mi</span>
 </code></pre></div><p>This sensor not only gives you the distance between the resident and home but also if the resident is moving towards or away from home. You can calculate the distance to zones other than home by changing the <code>zone</code> attribute of the sensor (defaults to <code>home</code>).</p>
 <p>This is specially useful to check <del>if you can play one more round of your favorite video-game before your partner arrives and give you heat for being playing video-games all day</del> for many different reasons.</p>
 <h3 id="creating-battery_level-sensors-if-your-battery_level-is-a-sensors-attribute">Creating <code>battery_level</code> sensors if your <code>battery_level</code> is a sensor&rsquo;s attribute</h3>
@@ -138,58 +138,58 @@ person:
 <h3 id="creating-the-card-definition">Creating the card definition</h3>
 <p>Each resident block consists of a picture, the zone indicator (Home/Away/Work) and the distance to home in the bottom and the phone battery percentage and icon on the top left corner.</p>
 <p>I use a small CSS trick to make the Zone Indicator element span across all bottom part forming a bar with a black background with <code>0.4</code> opacity for the looks. Positioning is done using percentages and <code>em</code> so all is relative and somewhat responsive.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">cards:
-- <span style="color:#66d9ef">type</span>: picture-elements
-    <span style="color:#66d9ef">image</span>: !file /local/images/residents/jseidl.jpg
-    elements:
-      <span style="color:#75715e"># Home / Away - Zone indicator</span>
-      - <span style="color:#66d9ef">type</span>: state-label
-        <span style="color:#66d9ef">entity</span>: device_tracker.jseidl_presence
-        style:
-          <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">bottom</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">pointer-events</span>: none
-          <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">1.</span>1em
-          <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">1.</span>1em
-          <span style="color:#66d9ef">background-color</span>: rgba(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.4</span>)
-          <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">100</span>%
-          <span style="color:#66d9ef">transform</span>: initial
-          <span style="color:#66d9ef">padding</span>: <span style="color:#ae81ff">0</span> 2px
-      <span style="color:#75715e"># Proximity to Home</span>
-      - <span style="color:#66d9ef">type</span>: state-label
-        <span style="color:#66d9ef">entity</span>: proximity.home_jseidl
-        style:
-          <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">bottom</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">pointer-events</span>: none
-          <span style="color:#66d9ef">transform</span>: initial
-          <span style="color:#66d9ef">line-height</span>: <span style="color:#ae81ff">1.</span>1em
-          <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">1.</span>1em
-          <span style="color:#66d9ef">padding</span>: <span style="color:#ae81ff">0</span> 2px
-          <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
-      <span style="color:#75715e"># Phone Battery (Text)</span>
-      - <span style="color:#66d9ef">type</span>: state-label
-        <span style="color:#66d9ef">entity</span>: sensor.jseidl_phone_batt
-        <span style="color:#66d9ef">title</span>: sensor.jseidl_phone_batt
-        style:
-          <span style="color:#66d9ef">left</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">top</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">padding</span>: <span style="color:#ae81ff">0</span> 8px
-          <span style="color:#66d9ef">pointer-events</span>: none
-          <span style="color:#66d9ef">transform</span>: initial
-          <span style="color:#66d9ef">line-height</span>: 2em
-          <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">1.</span>1em
-      <span style="color:#75715e"># Phone Battery (Icon)</span>
-      - <span style="color:#66d9ef">type</span>: state-icon
-        <span style="color:#66d9ef">entity</span>: sensor.jseidl_phone_batt
-        style:
-          <span style="color:#66d9ef">right</span>: <span style="color:#ae81ff">0</span>
-          <span style="color:#66d9ef">top</span>: <span style="color:#ae81ff">2</span>%
-          <span style="color:#66d9ef">pointer-events</span>: none
-          <span style="color:#66d9ef">transform</span>: initial
-          <span style="color:#66d9ef">line-height</span>: 2em
-          <span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">1.</span>1em
-          <span style="color:#66d9ef">&#34;--paper-item-icon-color&#34;: </span>white
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">cards</span>:
+- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">picture-elements</span>
+    <span style="color:#f92672">image</span>: !<span style="color:#ae81ff">file /local/images/residents/jseidl.jpg</span>
+    <span style="color:#f92672">elements</span>:
+      <span style="color:#75715e"># Home / Away - Zone indicator</span>
+      - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+        <span style="color:#f92672">entity</span>: <span style="color:#ae81ff">device_tracker.jseidl_presence</span>
+        <span style="color:#f92672">style</span>:
+          <span style="color:#f92672">left</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">pointer-events</span>: <span style="color:#ae81ff">none</span>
+          <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+          <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+          <span style="color:#f92672">background-color</span>: <span style="color:#ae81ff">rgba(0, 0, 0, 0.4)</span>
+          <span style="color:#f92672">width</span>: <span style="color:#ae81ff">100</span><span style="color:#ae81ff">%</span>
+          <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+          <span style="color:#f92672">padding</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2px</span>
+      <span style="color:#75715e"># Proximity to Home</span>
+      - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+        <span style="color:#f92672">entity</span>: <span style="color:#ae81ff">proximity.home_jseidl</span>
+        <span style="color:#f92672">style</span>:
+          <span style="color:#f92672">right</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">bottom</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">pointer-events</span>: <span style="color:#ae81ff">none</span>
+          <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+          <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+          <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+          <span style="color:#f92672">padding</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2px</span>
+          <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
+      <span style="color:#75715e"># Phone Battery (Text)</span>
+      - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-label</span>
+        <span style="color:#f92672">entity</span>: <span style="color:#ae81ff">sensor.jseidl_phone_batt</span>
+        <span style="color:#f92672">title</span>: <span style="color:#ae81ff">sensor.jseidl_phone_batt</span>
+        <span style="color:#f92672">style</span>:
+          <span style="color:#f92672">left</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">top</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">padding</span>: <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">8px</span>
+          <span style="color:#f92672">pointer-events</span>: <span style="color:#ae81ff">none</span>
+          <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+          <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+          <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+      <span style="color:#75715e"># Phone Battery (Icon)</span>
+      - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">state-icon</span>
+        <span style="color:#f92672">entity</span>: <span style="color:#ae81ff">sensor.jseidl_phone_batt</span>
+        <span style="color:#f92672">style</span>:
+          <span style="color:#f92672">right</span>: <span style="color:#ae81ff">0</span>
+          <span style="color:#f92672">top</span>: <span style="color:#ae81ff">2</span><span style="color:#ae81ff">%</span>
+          <span style="color:#f92672">pointer-events</span>: <span style="color:#ae81ff">none</span>
+          <span style="color:#f92672">transform</span>: <span style="color:#ae81ff">initial</span>
+          <span style="color:#f92672">line-height</span>: <span style="color:#ae81ff">2em</span>
+          <span style="color:#f92672">font-size</span>: <span style="color:#ae81ff">1.</span><span style="color:#ae81ff">1em</span>
+          <span style="color:#f92672">&#34;--paper-item-icon-color&#34;: </span><span style="color:#ae81ff">white</span>
 </code></pre></div><p>And that&rsquo;s all it takes to have a nice residents display on your Lovelace UI. Picture Elements is very powerful and I use in quite different cards that I will be showcasing in a near future. Let me know in the comments what other information do you think it would be useful to have in this card. Stay safe and keep getting creative with your homes!</p>
         </div>
       </div>
